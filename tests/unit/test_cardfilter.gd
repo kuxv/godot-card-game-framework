@@ -17,7 +17,7 @@ func before_each():
 	}
 #	var confirm_return = setup_board()
 #	if confirm_return is GDScriptFunctionState: # Still working.
-#		confirm_return = yield(confirm_return, "completed")
+#		confirm_return = await confirm_return.completed
 
 func test_init() -> void:
 	var cf = CardFilter.new('Type', 'Blue')

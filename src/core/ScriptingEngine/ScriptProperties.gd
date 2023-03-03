@@ -3,7 +3,7 @@
 #
 # It also provides a few static functions for comparing filters
 class_name ScriptProperties
-extends Reference
+extends RefCounted
 
 
 #---------------------------------------------------------------------
@@ -788,7 +788,7 @@ const VALUE_COMPARE_WITH_TRIGGER := "compare_with_trigger"
 # If that task [is a cost](#KEY_IS_COST), it will also prevent subsequent tasks
 # from firing
 #
-# At the script level, the whole script if cancelled.
+# At the script level, the whole script if canceled.
 const KEY_IS_OPTIONAL := "is_optional_"
 # Value Type: Bool (default: False)
 #
