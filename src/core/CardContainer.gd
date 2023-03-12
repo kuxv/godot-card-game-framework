@@ -34,10 +34,10 @@ enum Anchors{
 # In case of multiple CardContainers using the same anchor placement,
 # specifies whether this container should displace itself to make space
 # for the others, and how.
-@export var overlap_shift_direction # (CFInt.OverlapShiftDirection)
+@export var overlap_shift_direction : CFInt.OverlapShiftDirection
 # In case of multiple CardContainers using the same anchor placement
 # specifies which container should be displaced more.
-@export var index_shift_priority # (CFInt.IndexShiftPriority)
+@export var index_shift_priority : CFInt.IndexShiftPriority
 @export var card_size := CFConst.CARD_SIZE
 # If set to false, no manipulation buttons will appear when hovering
 # over this container.
