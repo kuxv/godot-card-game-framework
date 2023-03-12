@@ -90,7 +90,7 @@ func compile_filters(line_text: String) -> Array:
 		# we use the regex groups to populate the DBFilter object
 		if regex_result:
 			# if a specific conditional was not used, we default to the card name
-			if not regex_result.get_string(1):
+			if regex_result.get_string(1).is_empty():
 				filter_entry.property = "Name"
 			else:
 				filter_entry.property = criteria_map[regex_result.get_string(1)]
