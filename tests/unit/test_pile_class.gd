@@ -45,7 +45,7 @@ func test_popup_view():
 	var card_order := pile.get_all_cards()
 	var ordered_cards := pile.get_all_cards()
 	ordered_cards.sort_custom(Callable(CFUtils,"sort_scriptables_by_name"))
-	ordered_cards.invert()
+	ordered_cards.reverse()
 	var ordered_card_names := []
 	for o in ordered_cards:
 		ordered_card_names.append(o.canonical_name)

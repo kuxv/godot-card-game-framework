@@ -142,7 +142,7 @@ func populate_popup(sorted:= sorted_popup) -> void:
 	manipulation_buttons.visible = false
 	# We set the size of the grid to hold slightly scaled-down cards
 	var card_array := get_all_cards(false)
-	card_array.invert()
+	card_array.reverse()
 	pre_sorted_order = get_all_cards()
 	if sorted:
 		card_array.sort_custom(Callable(CFUtils,"sort_scriptables_by_name"))

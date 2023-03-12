@@ -391,7 +391,7 @@ func sort_subjects(subject_list: Array) -> Array:
 			sorted_subjects.append(d.card)
 	# If we want a descending list, we invert the subject list
 	if get_property(SP.KEY_SORT_DESCENDING):
-		sorted_subjects.invert()
+		sorted_subjects.reverse()
 	return(sorted_subjects)
 
 
