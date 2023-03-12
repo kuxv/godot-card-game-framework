@@ -19,11 +19,11 @@ class TestSubjectTarget:
 		#watch_signals(scripting_engine)
 		await yield_to(target_card(card,card), "completed", 0.1).YIELD
 	#	await target_card(card,card).completed
-		await yield_to(card._tween, "tween_all_completed", 0.4).YIELD
+		await yield_to(card._tween, "loop_finished", 0.4).YIELD
 		assert_eq(card.card_rotation, 270,
 				"First rotation should happen before targetting second time")
 		await yield_to(target_card(card,card), "completed", 0.1).YIELD
-		await yield_to(card._tween, "tween_all_completed", 0.4).YIELD
+		await yield_to(card._tween, "loop_finished", 0.4).YIELD
 		assert_eq(card.card_rotation, 90,
 				"Second rotation should also happen")
 
@@ -51,7 +51,7 @@ class TestSubjectBoardseek:
 				"degrees": 90}]}}
 	# warning-ignore:unused_variable
 		var scripting_engine = card.execute_scripts()
-		await yield_to(target._tween, "tween_all_completed", 1).YIELD
+		await yield_to(target._tween, "loop_finished", 1).YIELD
 		assert_eq(target.card_rotation, 180,
 				"Card on board matching property should be rotated 90 degrees")
 		assert_eq(target2.card_rotation, 90,
@@ -75,7 +75,7 @@ class TestSubjectPrevious:
 				"subject": "previous",
 				"degrees": 90}]}}
 		card.execute_scripts()
-		await yield_to(target._tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._tween, "loop_finished", 0.5).YIELD
 		assert_eq(target.card_rotation, 90,
 				"Target should be pre-selected to be rotated")
 		assert_true(target.is_faceup,
@@ -100,7 +100,7 @@ class TestSubjectPrevious:
 				"set_faceup": false}]}}
 	# warning-ignore:unused_variable
 		var scripting_engine = card.execute_scripts()
-		await yield_to(target._tween, "tween_all_completed", 1).YIELD
+		await yield_to(target._tween, "loop_finished", 1).YIELD
 		assert_false(target.is_faceup,
 				"Target should be pre-selected to be flipped")
 		assert_false(target2.is_faceup,
@@ -118,7 +118,7 @@ class TestSubjectTutor:
 				"board_position":  Vector2(1000,200)}]}}
 		card.execute_scripts()
 		target = cfc.NMAP.board.get_card(0)
-		await yield_to(target._tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._tween, "loop_finished", 0.5).YIELD
 		assert_eq("Red",target.properties["Type"],
 				"Card of the correct type should be placed on the board")
 		card.scripts = {"manual": {"hand": [
@@ -130,7 +130,7 @@ class TestSubjectTutor:
 				"board_position":  Vector2(100,200)}]}}
 		card.execute_scripts()
 		target = cfc.NMAP.board.get_card(1)
-		await yield_to(target._tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._tween, "loop_finished", 0.5).YIELD
 		assert_eq("Multiple Choices Test Card",target.canonical_name,
 				"Card of the correct name should be placed on the board")
 
@@ -146,7 +146,7 @@ class TestSubjectIndex:
 				"src_container": "deck",
 				"board_position":  Vector2(1000,200)}]}}
 		card.execute_scripts()
-		await yield_to(target._tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._tween, "loop_finished", 0.5).YIELD
 		assert_eq(cfc.NMAP.board,target.get_parent(),
 				"Card should have moved to board")
 		target = cfc.NMAP.deck.get_card(0)
@@ -156,7 +156,7 @@ class TestSubjectIndex:
 				"src_container": "deck",
 				"board_position":  Vector2(100,200)}]}}
 		card.execute_scripts()
-		await yield_to(target._tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._tween, "loop_finished", 0.5).YIELD
 		assert_eq(cfc.NMAP.board,target.get_parent(),
 				"When index is not specified, top card should have moved to the board")
 
@@ -241,7 +241,7 @@ class TestSubjectsNext:
 				},
 			}
 		await execute_with_target(card,target).completed
-		await yield_to(target._tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._tween, "loop_finished", 0.5).YIELD
 		assert_eq(board.counters.get_counter("research"),3,
 				"Counter set to the specified amount")
 

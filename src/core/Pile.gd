@@ -110,7 +110,7 @@ func _on_ViewPopup_popup_hide() -> void:
 			Color(1,1,1,1), Color(1,1,1,0), 0.5,
 			Tween.TRANS_EXPO, Tween.EASE_OUT)
 	$ViewPopup/Tween.start()
-	await $ViewPopup/Tween.tween_all_completed
+	await $ViewPopup/Tween.loop_finished
 	for card in pre_sorted_order:
 		# For each card we have hosted, we check if it's hosted in the popup.
 		# If it is, we move it to the root.
@@ -385,7 +385,7 @@ func shuffle_cards(animate = true) -> void:
 			_add_tween_rotation(rotation_degrees,shuffle_rotation,0.2)
 			_tween.start()
 			# We move the pile to a more central location to see the anim
-			await _tween.tween_all_completed
+			await _tween.loop_finished
 			# The animation speeds have been empirically tested to look good
 			next_card_speed = 0.05 - 0.002 * card_count
 			if next_card_speed < 0.01:
@@ -409,7 +409,7 @@ func shuffle_cards(animate = true) -> void:
 			_add_tween_position(position,shuffle_position,0.2)
 			_add_tween_rotation(rotation_degrees,shuffle_rotation,0.2)
 			_tween.start()
-			await _tween.tween_all_completed
+			await _tween.loop_finished
 			# The animation speeds have been empirically tested to look good
 			anim_speed = 0.6
 			for card in get_all_cards():
@@ -426,7 +426,7 @@ func shuffle_cards(animate = true) -> void:
 			_add_tween_position(position,shuffle_position,0.2)
 			_add_tween_rotation(rotation_degrees,shuffle_rotation,0.2)
 			_tween.start()
-			await _tween.tween_all_completed
+			await _tween.loop_finished
 			anim_speed = 0.2
 			var card = get_random_card()
 			card.animate_shuffle(anim_speed, CFConst.ShuffleStyle.SNAP)

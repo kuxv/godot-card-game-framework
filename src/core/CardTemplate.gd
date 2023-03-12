@@ -1286,9 +1286,9 @@ func move_to(targetHost: Node,
 				# One for the fancy move, and then the move to the final position.
 				# If we don't then the card will appear to teleport
 				# to the pile before starting animation
-				await $Tween.tween_all_completed
+				await $Tween.loop_finished
 				if cfc.game_settings.fancy_movement:
-					await $Tween.tween_all_completed
+					await $Tween.loop_finished
 				targetHost.reorganize_stack()
 		else:
 			interruptTweening()
@@ -1826,7 +1826,7 @@ func animate_shuffle(anim_speed : float, style : int) -> void:
 	if rot_anim:
 		_add_tween_rotation(0,random_rot,rot_speed,rot_anim,Tween.EASE_OUT)
 	_tween.start()
-	await _tween.tween_all_completed
+	await _tween.loop_finished
 	_add_tween_position(center_card_pop_position,starting_card_position,
 			pos_speed,end_pos_anim,Tween.EASE_IN)
 	if rot_anim:
@@ -2145,7 +2145,7 @@ func _flip_card(to_invisible: Control, to_visible: Control, instant := false) ->
 				(highlight.size.x-3)/2,0), 0.4,
 				Tween.TRANS_QUAD, Tween.EASE_IN)
 		_flip_tween.start()
-		await _flip_tween.tween_all_completed
+		await _flip_tween.loop_finished
 		to_visible.visible = true
 		to_invisible.visible = false
 		_flip_tween.interpolate_property(to_visible,'scale',
@@ -2387,7 +2387,7 @@ func _process_card_state() -> void:
 					_add_tween_global_position(global_position, intermediate_position,
 						to_container_tween_duration)
 					$Tween.start()
-					await $Tween.tween_all_completed
+					await $Tween.loop_finished
 					_tween_stuck_time = 0
 					_fancy_move_second_part = true
 				# We need to check again, just in case it's been reorganized instead.
@@ -2397,7 +2397,7 @@ func _process_card_state() -> void:
 					_add_tween_rotation($Control.rotation,_target_rotation,
 						to_container_tween_duration)
 					$Tween.start()
-					await $Tween.tween_all_completed
+					await $Tween.loop_finished
 					_determine_idle_state()
 				_fancy_move_second_part = false
 
@@ -2669,7 +2669,7 @@ func _process_card_state() -> void:
 				_add_tween_scale(scale, Vector2(1,1),0.75)
 				_add_tween_global_position(global_position, get_viewport().size/2 - CFConst.CARD_SIZE/2)
 				_tween.start()
-				await _tween.tween_all_completed
+				await _tween.loop_finished
 				_tween_stuck_time = 0
 				move_to(spawn_destination)
 				spawn_destination = null

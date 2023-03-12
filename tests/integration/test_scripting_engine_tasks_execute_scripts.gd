@@ -15,7 +15,7 @@ class TestExecuteScripts:
 				"board_position":  Vector2(100,100)}]}}
 		card.execute_scripts()
 		await target_card(card,target).completed
-		await yield_to(card._tween, "tween_all_completed", 1).YIELD
+		await yield_to(card._tween, "loop_finished", 1).YIELD
 		assert_eq(target.get_parent(),cfc.NMAP.board,
 				"Card should have moved to board")
 		target.scripts = {"manual": {"board": [

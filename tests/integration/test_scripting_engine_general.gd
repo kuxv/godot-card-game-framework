@@ -18,12 +18,12 @@ class TestBasics:
 		card.execute_scripts()
 		pending("Empty does not create a ScriptingEngine object")
 		card.is_faceup = false
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		card.scripts = {"hand": [{"name": "flip_card","set_faceup": true}]}
 		card.execute_scripts()
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		assert_false(card.is_faceup,
 				"Scripts should not fire while card is face-down")
 		card.scripts = {"hand": [{}]}
@@ -37,51 +37,51 @@ class TestStateExecutions:
 				"subject": "self",
 				"set_faceup": false}]}}
 		card.execute_scripts()
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		assert_false(card.is_faceup,
 			"Target should be face-down")
 		card.is_faceup = true
 		card.state = Card.CardState.PUSHED_ASIDE
 		card.execute_scripts()
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		assert_false(card.is_faceup,
 			"Target should be face-down")
 		card.is_faceup = true
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		card.state = Card.CardState.FOCUSED_IN_HAND
 		card.execute_scripts()
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		assert_false(card.is_faceup,
 			"Target should be face-down")
 		card.is_faceup = true
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		card.scripts = {"manual": {"board": [
 				{"name": "flip_card",
 				"subject": "self",
 				"set_faceup": false}]}}
 		await table_move(card, Vector2(500,100)).completed
 		card.execute_scripts()
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		assert_false(card.is_faceup,
 			"Target should be face-down")
 		card.is_faceup = true
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		card.state = Card.CardState.FOCUSED_ON_BOARD
 		card.execute_scripts()
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
-		await yield_to(target._flip_tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
+		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		assert_false(card.is_faceup,
 			"Target should be face-down")
 		card.move_to(cfc.NMAP.discard)
-		await yield_to(card._tween, "tween_all_completed", 1).YIELD
-		await yield_to(card._tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(card._tween, "loop_finished", 1).YIELD
+		await yield_to(card._tween, "loop_finished", 0.5).YIELD
 		card.scripts = {"manual": {"pile": [
 				{"name": "move_card_to_board",
 				"subject": "self",
@@ -89,15 +89,15 @@ class TestStateExecutions:
 		discard._on_View_Button_pressed()
 		await yield_for(1).YIELD
 		card.execute_scripts()
-		await yield_to(card._tween, "tween_all_completed", 1).YIELD
-		await yield_to(card._tween, "tween_all_completed", 0.5).YIELD
+		await yield_to(card._tween, "loop_finished", 1).YIELD
+		await yield_to(card._tween, "loop_finished", 0.5).YIELD
 		assert_eq(Vector2(100,100),card.global_position,
 				"Card should have moved to specified position")
 		card.move_to(cfc.NMAP.discard)
-		await yield_to(card._tween, "tween_all_completed", 1).YIELD
+		await yield_to(card._tween, "loop_finished", 1).YIELD
 		card.state = Card.CardState.FOCUSED_IN_POPUP
 		card.execute_scripts()
-		await yield_to(card._tween, "tween_all_completed", 1).YIELD
+		await yield_to(card._tween, "loop_finished", 1).YIELD
 		assert_eq(Vector2(100,100),card.global_position,
 				"Card should have moved to specified position")
 
@@ -113,7 +113,7 @@ class TestCardScripts:
 		await table_move(card, Vector2(100,200)).completed
 		card.execute_scripts()
 		await target_card(card,target,"slow").completed
-		await yield_to(target.get_node("Tween"), "tween_all_completed", 1).YIELD
+		await yield_to(target.get_node("Tween"), "loop_finished", 1).YIELD
 		# This also tests the _common_target set
 		assert_false(target.is_faceup,
 				"Test1 script leaves target facedown")
@@ -122,7 +122,7 @@ class TestCardScripts:
 		await table_move(cards[4], Vector2(500,200)).completed
 		card.execute_scripts()
 		await target_card(card,cards[4]).completed
-		await yield_to(cards[4].get_node("Tween"), "tween_all_completed", 1).YIELD
+		await yield_to(cards[4].get_node("Tween"), "loop_finished", 1).YIELD
 		assert_false(cards[4].is_faceup,
 				"Ensure targeting is cleared after first ScriptingEngine")
 
