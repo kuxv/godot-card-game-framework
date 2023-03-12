@@ -195,7 +195,7 @@ func get_token_count(token_name: String) -> int:
 	if not token:
 		return(0)
 	else:
-		return(token.get_count())
+		return(await token.get_count())
 
 
 # Returns true, when the mouse cursor is over the drawer.
