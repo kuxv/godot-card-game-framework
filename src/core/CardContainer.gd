@@ -189,6 +189,7 @@ func get_all_manipulation_buttons() -> Array:
 
 
 # Overrides the built-in get_class to return "CardContainer" instead of "Area2D"
+@warning_ignore("native_method_override")
 func get_class():
 	return "CardContainer"
 

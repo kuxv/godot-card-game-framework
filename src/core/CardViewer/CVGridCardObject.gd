@@ -41,6 +41,7 @@ func _on_GridCardObject_mouse_exited() -> void:
 	preview_popup.hide_preview_card()
 
 
+@warning_ignore("native_method_override")
 func get_class() -> String:
 	return("CVGridCardObject")
 
