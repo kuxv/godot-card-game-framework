@@ -111,8 +111,7 @@ func test_save_load_reset():
 			"Deck path exists")
 	assert_true(dir.file_exists(CFConst.DECKS_PATH + deck_name + ".json"),
 			"Deck saved correctly")
-	var file = File.new()
-	file.open(CFConst.DECKS_PATH + deck_name + '.json', File.READ)
+	var file = FileAccess.open(CFConst.DECKS_PATH + deck_name + '.json', FileAccess.READ)
 	var test_json_conv = JSON.new()
 	test_json_conv.parse(file.get_as_text())
 	var data = test_json_conv.get_data()

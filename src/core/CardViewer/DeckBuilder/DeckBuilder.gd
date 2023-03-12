@@ -157,8 +157,7 @@ func _on_Save_pressed() -> void:
 	var dir = Directory.new()
 	if not dir.dir_exists(CFConst.DECKS_PATH):
 		dir.make_dir(CFConst.DECKS_PATH)
-	var file = File.new()
-	file.open(CFConst.DECKS_PATH + _deck_name.text + '.json', File.WRITE)
+	var file = FileAccess.open(CFConst.DECKS_PATH + _deck_name.text + '.json', FileAccess.WRITE)
 	file.store_string(JSON.stringify(deck_dictionary, '\t'))
 	file.close()
 	_set_notice("Deck saved")

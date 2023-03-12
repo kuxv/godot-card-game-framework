@@ -19,11 +19,10 @@ func _ready() -> void:
 # Returns an Array of Dictionaries, where each dictionary is the details
 # of a deck loaded from disk.
 static func load_all_decks() -> Array:
-	var available_decks = CFUtils.list_files_in_directory(CFConst.DECKS_PATH)
-	var file = File.new()
+	var available_decks = CFUtils.list_files_in_directory(CFConst.DECKS_PATH)	
 	var loaded_decks_list := []
 	for deck in available_decks:
-		file.open(CFConst.DECKS_PATH + deck, File.READ)
+		var file = FileAccess.open(CFConst.DECKS_PATH + deck, FileAccess.READ)
 		var test_json_conv = JSON.new()
 		test_json_conv.parse(file.get_as_text())
 		var data = test_json_conv.get_data()

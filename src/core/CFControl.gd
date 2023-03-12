@@ -298,17 +298,15 @@ func set_game_paused(value: bool) -> void:
 # permanently on-disk.
 func set_setting(setting_name: String, value) -> void:
 	game_settings[setting_name] = value
-	var file = File.new()
-	file.open(CFConst.SETTINGS_FILENAME, File.WRITE)
+	var file = FileAccess.open(CFConst.SETTINGS_FILENAME, FileAccess.WRITE)
 	file.store_string(JSON.stringify(game_settings, '\t'))
 	file.close()
 
 
 # Initiates game_settings from the contents of CFConst.SETTINGS_FILENAME
 func init_settings_from_file() -> void:
-	var file = File.new()
-	if file.file_exists(CFConst.SETTINGS_FILENAME):
-		file.open(CFConst.SETTINGS_FILENAME, File.READ)
+	if FileAccess.file_exists(CFConst.SETTINGS_FILENAME):
+		var file = FileAccess.open(CFConst.SETTINGS_FILENAME, FileAccess.READ)
 		var test_json_conv = JSON.new()
 		test_json_conv.parse(file.get_as_text())
 		var data = test_json_conv.get_data()
@@ -333,18 +331,16 @@ func set_font_cache() -> void:
 func _commit_font_cache() -> void:
 #	timer.disconnect("timeout",Callable(self,"_commit_font_cache"))
 #	timer.queue_free()
-	var file = File.new()
-	file.open(CFConst.FONT_SIZE_CACHE, File.WRITE)
+	var file = FileAccess.open(CFConst.FONT_SIZE_CACHE, FileAccess.WRITE)
 	file.store_string(JSON.stringify(font_size_cache, '\t'))
 	file.close()
 	cache_commit_timer = null
 
 
 # Initiates game_settings from the contents of CFConst.SETTINGS_FILENAME
-func init_font_cache() -> void:
-	var file = File.new()
-	if file.file_exists(CFConst.FONT_SIZE_CACHE):
-		file.open(CFConst.FONT_SIZE_CACHE, File.READ)
+func init_font_cache() -> void:	
+	if FileAccess.file_exists(CFConst.FONT_SIZE_CACHE):
+		var file = FileAccess.open(CFConst.FONT_SIZE_CACHE, FileAccess.READ)
 		var test_json_conv = JSON.new()
 		test_json_conv.parse(file.get_as_text())
 		var data = test_json_conv.get_data()
