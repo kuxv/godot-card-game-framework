@@ -18,7 +18,7 @@ func _ready() -> void:
 # Prepares the window to request the integer from the player
 # in the correct range and bring the popup to the front.
 func prep(title_reference: String, min_req: int, max_req : int) -> void:
-		window_title = "Please enter number for the effect of " + title_reference
+		title = "Please enter number for the effect of " + title_reference
 		$IntegerLineEdit.placeholder_text = \
 				"Enter number between " + str(min_req) + " and " + str(max_req)
 		$IntegerLineEdit.minimum = min_req

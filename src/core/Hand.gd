@@ -42,7 +42,7 @@ func _ready() -> void:
 	add_to_group("hands")
 
 func prepare_excess_discard_pile() -> void:
-	if excess_discard_pile_name\
+	if excess_discard_pile_name.is_empty()\
 			and not _excess_discard_pile\
 			and cfc.NMAP.has(excess_discard_pile_name.to_lower()):
 		_excess_discard_pile = cfc.NMAP[excess_discard_pile_name.to_lower()]

@@ -139,7 +139,7 @@ func _find_subjects(stored_integer := 0) -> Array:
 		var selection_optional = get_property(SP.KEY_SELECTION_OPTIONAL)
 		if get_property(SP.KEY_SELECTION_IGNORE_SELF):
 			subjects_array.erase(owner)
-		var select_return = cfc.ov_utils.select_card(
+		var select_return = await cfc.ov_utils.select_card(
 				subjects_array, selection_count, selection_type, selection_optional, cfc.NMAP.board)
 		# In case the owner card is still focused (say because script was triggered
 		# on double-click and card was not moved
@@ -152,16 +152,14 @@ func _find_subjects(stored_integer := 0) -> Array:
 				for c in owner.get_parent().get_all_cards():
 					c.interruptTweening()
 					c.reorganize_self()
-		if select_return is GDScriptFunctionState: # Still working.
-			select_return = await select_return.completed
-			# If the return is not an array, it means that the selection
-			# was canceled (either because there were not enough cards
-			# or because the player pressed cancel
-			# in which case we consider the task invalid
-			if typeof(select_return) == TYPE_ARRAY:
-				subjects_array = select_return
-			else:
-				is_valid = false
+		# If the return is not an array, it means that the selection
+		# was canceled (either because there were not enough cards
+		# or because the player pressed cancel
+		# in which case we consider the task invalid
+		if typeof(select_return) == TYPE_ARRAY:
+			subjects_array = select_return
+		else:
+			is_valid = false
 	subjects = subjects_array
 	return(subjects_array)
 
@@ -432,7 +430,7 @@ func parse_replacements() -> void:
 											card.canonical_name
 								else:
 									property_filters[property] =\
-											card.get_property(property)
+											await card.get_property(property)
 					# This branch checks for replacements for
 					# filter_tokens
 					# We have to go to each dictionary for filter_tokens
@@ -451,7 +449,7 @@ func parse_replacements() -> void:
 								else:
 									card = trigger_object
 								var owner_token_count :=\
-										card.tokens.get_token_count(
+										await card.tokens.get_token_count(
 										token_filters["filter_" + SP.KEY_TOKEN_NAME])
 								token_filters[SP.FILTER_COUNT] =\
 										owner_token_count

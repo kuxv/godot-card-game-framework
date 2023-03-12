@@ -12,7 +12,7 @@ var _has_cards := false
 
 # The pile's name. If this value is changed, it will change the
 # `pile_name_label` text.
-@export var pile_name: String : String : set = set_pile_name
+@export var pile_name: String : set = set_pile_name
 # The shuffle style chosen for this pile. See CFConst.ShuffleStyle documentation.
 @export var shuffle_style = CFConst.ShuffleStyle.AUTO # (CFConst.ShuffleStyle)
 # If this is set to true, cards on this stack will be placed face-up.
@@ -55,12 +55,12 @@ func _ready():
 	# warning-ignore:return_value_discarded
 	connect(
 		"shuffle_completed",
-		cfc.signal_propagator,
-		"_on_signal_received",
+		Callable(cfc.signal_propagator,
+		"_on_signal_received").bind(
 		[
 			"shuffle_completed",
 			{"source": name}
-		])
+		]))
 
 
 func _process(_delta) -> void:
@@ -161,7 +161,7 @@ func populate_popup(sorted:= sorted_popup) -> void:
 func set_pile_name(value: String) -> void:
 	# If the pile name has not been specified
 	# we default to the node name instead
-	if not pile_name:
+	if pile_name.is_empty():
 		pile_name = name
 	else:
 		pile_name = value
@@ -178,7 +178,8 @@ func set_pile_name(value: String) -> void:
 #
 # Also checks if the popup window is currently open, and puts the card
 # directly there in that case.
-func add_child(node, _legible_unique_name=false) -> void:
+@warning_ignore("native_method_override")
+func add_child(node, _legible_unique_name=false, _internal_mode = Node.INTERNAL_MODE_DISABLED) -> void:
 	if not $ViewPopup.visible:
 		super.add_child(node)
 		if node as Card:
@@ -205,6 +206,7 @@ func add_child(node, _legible_unique_name=false) -> void:
 # Overrides the function which removed chilren nodes so that it detects
 # when a Card class is removed. In that case it also shows
 # this container's "floor" if it was the last card in the pile.
+@warning_ignore("native_method_override")
 func remove_child(node, _legible_unique_name=false) -> void:
 	super.remove_child(node)
 	card_count_label.text = str(get_card_count())
@@ -259,6 +261,7 @@ func reorganize_stack() -> void:
 
 # Override the godot builtin move_child() method,
 # to make sure the $Control node is always drawn on top of Card nodes
+@warning_ignore("native_method_override")
 func move_child(child_node, to_position) -> void:
 	super.move_child(child_node, to_position)
 	$Control.raise()
@@ -275,7 +278,7 @@ func get_all_cards(_scanViewPopup := true) -> Array:
 	if is_popup_open:
 		return(pre_sorted_order)
 	else:
-		return(.get_all_cards())
+		return(super.get_all_cards())
 
 
 # A wrapper for the CardContainer's get_last_card()
@@ -343,8 +346,7 @@ func shuffle_cards(animate = true) -> void:
 		var init_position = position
 		# The following calculation figures out the direction
 		# towards the center of the viewport from the center of the card
-		var shuffle_direction = (global_position + $Control.size/2)\
-				super.direction_to(get_viewport().size / 2)
+		var shuffle_direction = (global_position + $Control.size/2).direction_to(get_viewport().size / 2)
 		# We increase the intensity of the y direction, to make the shuffle
 		# position move higher up or down respective to its position.
 		shuffle_direction.y *= 2
