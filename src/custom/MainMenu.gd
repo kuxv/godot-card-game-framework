@@ -49,14 +49,11 @@ func switch_to_tab(tab: Control) -> void:
 #			main_position_x = -get_viewport().size.x
 		deck_builder, card_library:
 			main_position_x = get_viewport().size.x
-	$MenuTween.interpolate_property(main_menu,'position:x',
-			main_menu.position.x, main_position_x, menu_switch_time,
-			Tween.TRANS_BACK, Tween.EASE_IN_OUT)
-	$MenuTween.interpolate_property(tab,'position:x',
-			tab.position.x, 0, menu_switch_time,
-			Tween.TRANS_BACK, Tween.EASE_IN_OUT)
-	$MenuTween.start()
-
+	var tween = create_tween()
+	tween.set_trans(Tween.TRANS_BACK);
+	tween.set_ease(Tween.EASE_IN_OUT);
+	tween.tween_property(main_menu,'position:x', main_position_x, menu_switch_time);
+	tween.tween_property(tab, 'position:x', 0, menu_switch_time);
 
 func switch_to_main_menu(tab: Control) -> void:
 	var tab_position_x : float
@@ -65,13 +62,11 @@ func switch_to_main_menu(tab: Control) -> void:
 #			tab_position_x = get_viewport().size.x
 		deck_builder, card_library:
 			tab_position_x = -get_viewport().size.x
-	$MenuTween.interpolate_property(tab,'position:x',
-			tab.position.x, tab_position_x, menu_switch_time,
-			Tween.TRANS_BACK, Tween.EASE_IN_OUT)
-	$MenuTween.interpolate_property(main_menu,'position:x',
-			main_menu.position.x, 0, menu_switch_time,
-			Tween.TRANS_BACK, Tween.EASE_IN_OUT)
-	$MenuTween.start()
+	var tween = create_tween()
+	tween.set_trans(Tween.TRANS_BACK);
+	tween.set_ease(Tween.EASE_IN_OUT);
+	tween.tween_property(tab, 'position:x', tab_position_x, menu_switch_time);
+	tween.tween_property(main_menu, 'position:x', 0, menu_switch_time);
 
 func _on_DeckBuilder_Back_pressed() -> void:
 	switch_to_main_menu(deck_builder)

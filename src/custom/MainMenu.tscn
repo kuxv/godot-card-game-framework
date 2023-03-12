@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://clch7v54eqxqg"]
 
-[ext_resource type="Theme" path="res://themes/darktheme/darktheme.theme" id="1"]
+[ext_resource type="Theme" uid="uid://crxytvr6og0pk" path="res://themes/darktheme/darktheme.theme" id="1"]
 [ext_resource type="Script" path="res://src/custom/MainMenu.gd" id="3"]
 [ext_resource type="PackedScene" path="res://src/custom/CGFDeckbuilder/CGFDeckBuilder.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://src/custom/CGFDeckbuilder/CGFCardLibrary.tscn" id="5"]
@@ -90,11 +90,3 @@ text = "Tests"
 [node name="Exit" type="Button" parent="MainMenu/VBox/Center/VButtons"]
 layout_mode = 2
 text = "Exit"
-
-[node name="MenuTween" type="Tween" parent="."]
-_import_path = NodePath("")
-unique_name_in_owner = false
-process_mode = 0
-process_priority = 0
-editor_description = ""
-script = null
