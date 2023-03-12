@@ -65,17 +65,17 @@ func get_preview_placement() -> Vector2:
 	# If the card width is to small, we will place the info panels instead to the left of the card preview
 	if focus_info.visible:
 		focus_panel_offset = focus_info.size.x
-	if get_global_mouse_position().x\
+	if get_mouse_position().x\
 			+ card_size.x\
 			+ 20\
 			+ focus_panel_offset\
 			> get_viewport().size.x:
-		ret.x = get_global_mouse_position().x - card_size.x - 20 - focus_panel_offset
+		ret.x = get_mouse_position().x - card_size.x - 20 - focus_panel_offset
 	else:
-		ret.x = get_global_mouse_position().x + 20
-	var card_offscreen_y = get_global_mouse_position().y\
+		ret.x = get_mouse_position().x + 20
+	var card_offscreen_y = get_mouse_position().y\
 			+ card_size.y
-	var focus_offscreen_y = get_global_mouse_position().y + focus_info.size.y
+	var focus_offscreen_y = get_mouse_position().y + focus_info.size.y
 	if card_offscreen_y > focus_offscreen_y\
 			and is_instance_valid(preview_card)\
 			and card_offscreen_y > get_viewport().size.y:
@@ -87,7 +87,7 @@ func get_preview_placement() -> Vector2:
 		ret.y = get_viewport().size.y\
 				- focus_info.size.y + 30
 	else:
-		ret.y = get_global_mouse_position().y + 30
+		ret.y = get_mouse_position().y + 30
 #	print_debug(ret)
 	return(ret)
 
@@ -112,24 +112,22 @@ func show_preview_card(card) -> void:
 			preview_card.card_front.scale_to(preview_card.preview_scale * cfc.curr_scale)
 		cfc.ov_utils.populate_info_panels(preview_card,focus_info)
 		call_deferred("_set_placement")
-		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		gui_disable_input = true # TODO: before: mouse_filter = Control.MOUSE_FILTER_IGNORE
 	visible = true
 	_visible = true
 	if _placement_initialized:
-		modulate.a = 1
-
+		show()
 
 
 # Hides currently shown card.
 # We're modulating to 0 instead of hide() because that messes with the rich text labels formatting
 func hide_preview_card() -> void:
-	modulate.a = 0
-	
+	hide()
 	_visible = false
 
 func _on_placement_initialized() -> void:
 	if _visible:
-		modulate.a = 1
+		show()
 
 # We want to recreate the popup after the viewport size has changed
 # As otherwise its elements may end up messed up
