@@ -129,16 +129,15 @@ signal scripts_executed(card, sceng, trigger)
 # while it's face-down
 @export var is_viewed  := false : get = get_is_viewed, set = set_is_viewed
 # Specifies the card rotation in increments of 90 degrees
-@export var card_rotation  := 0 \ # (int, 0, 270, 90)
-		setget set_card_rotation, get_card_rotation
+@export var card_rotation : int = 0 : # (int, 0, 270, 90)
+		get = get_card_rotation, set = set_card_rotation_setter
 # Specifies where on the board the card may be placed
-@export var board_placement: BoardPlacement \
-		:= BoardPlacement.ANYWHERE
+@export var board_placement: BoardPlacement = BoardPlacement.ANYWHERE
 @export var mandatory_grid_name : String
 # Contains the scene which has the Card Back design to use for this card type
 # It needs to be scene which uses a CardBack class script.
-@export var card_back_design: PackedScene : PackedScene
-@export var card_front_design: PackedScene : PackedScene
+@export var card_back_design: PackedScene
+@export var card_front_design: PackedScene
 # We use this variable, so that the scene can be overriden with a custom one
 @export var targeting_arrow_scene = _TARGETING_SCENE
 # If true, the player will not be able to drop dragged cards back into
@@ -203,9 +202,9 @@ signal scripts_executed(card, sceng, trigger)
 # If not set, will be set to the value of the Name label in the front.
 # if that is also not set, will be set.
 # to the human-readable value of the "name" node property.
-var canonical_name : String : get = get_card_name, set = set_card_name
+var canonical_name : String : get = get_card_name, set = set_card_name_setter
 # Ensures all nodes fit inside this rect.
-var card_size := canonical_size : set = set_card_size
+var card_size := canonical_size : set = set_card_size_setter
 # Starting state for each card
 var state : int = CardState.PREVIEW : set = set_state
 var state_finalized := false
@@ -216,7 +215,7 @@ var attachments := []
 # this tracks who its host is.
 var current_host_card : Card = null
 # If true, the card will be displayed faceup. If false, it will be facedown
-var is_faceup := true : get = get_is_faceup, set = set_is_faceup
+var is_faceup := true : get = get_is_faceup, set = set_is_faceup_setter
 # Used to keep the card and mouse cursor in sync when dragging the card around
 # Represents the cursor's position relative to the card origin when drag was initiated
 var _drag_offset: Vector2
@@ -348,7 +347,7 @@ func _init_card_layout() -> void:
 # Ensures that the canonical card name is set in all fields which use it.
 #  var canonical_name, "Name" label and self.name should use the same string.
 func _init_card_name() -> void:
-	if not canonical_name:
+	if canonical_name.is_empty(): # TODO: this used to checked for null using not
 		# The node name changes depeding on how many other cards
 		# with the same node name are siblings
 		# We use this regex to discover the actual name
@@ -484,7 +483,7 @@ func _on_Card_gui_input(event) -> void:
 								and  _has_targeting_cost_hand_script()\
 								and check_play_costs() != CFConst.CostsState.IMPOSSIBLE:
 							cfc.card_drag_ongoing = null
-							var _sceng = execute_scripts()
+							var _sceng = await execute_scripts()
 						elif state == CardState.FOCUSED_IN_HAND\
 								and (disable_dragging_from_hand
 								or check_play_costs() == CFConst.CostsState.IMPOSSIBLE):
@@ -733,7 +732,7 @@ func refresh_card_front() -> void:
 # properties.get() as it takes into account the temp_properties_modifiers var
 # and also checks for alterant scripts
 func get_property(property: String):
-	return(get_property_and_alterants(property).value)
+	return(await get_property_and_alterants(property))
 
 
 # Discovers the modified value of the specified property based
@@ -781,13 +780,11 @@ func get_property_and_alterants(property: String,
 		# by filtering the card's properties, causing an infinite loop.
 		if not _is_property_being_altered:
 			_is_property_being_altered = true
-			alteration = CFScriptUtils.get_altered_value(
+			alteration = await CFScriptUtils.get_altered_value(
 				self,
 				"get_property",
 				{SP.KEY_PROPERTY_NAME: property,},
 				properties.get(property))
-			if alteration is GDScriptFunctionState:
-				alteration = await alteration.completed
 			_is_property_being_altered = false
 			# The first element is always the total modifier from all alterants
 			property_value += alteration.value_alteration
@@ -835,6 +832,9 @@ func resize_recursively(control_node: Node, requested_scale: float) -> void:
 
 
 # Sets the card size and adjusts all nodes depending on it.
+func set_card_size_setter(value: Vector2) -> void:
+	set_card_size(value)
+
 func set_card_size(value: Vector2, ignore_area = false) -> void:
 	card_size = value
 	_control.custom_minimum_size = value
@@ -862,6 +862,9 @@ func set_card_size(value: Vector2, ignore_area = false) -> void:
 #
 # * Returns CFConst.ReturnCode.CHANGED if the card actually changed rotation
 # * Returns CFConst.ReturnCode.OK if the card was already in the correct rotation
+func set_is_faceup_setter(value: bool) -> int:
+	return set_is_faceup(value)
+
 func set_is_faceup(
 			value: bool,
 			instant := false,
@@ -973,6 +976,9 @@ func get_is_viewed() -> bool:
 
 # Setter for canonical_name
 # Also changes the card label and the node name
+func set_card_name_setter(value : String) -> void:
+	set_card_name(value)
+
 func set_card_name(value : String, set_label := true) -> void:
 	# if the card_front.card_labels variable is not set it means ready() has not
 	# run yet, so we just store the card name for later.
@@ -998,6 +1004,7 @@ func get_card_name() -> String:
 # Overwrites the built-in set name, so that it also sets canonical_name
 #
 # It's preferrable to set canonical_name instead.
+@warning_ignore("native_method_override")
 func set_name(value : String) -> void:
 	super.set_name(value)
 	card_front.card_labels["Name"].text = value
@@ -1025,6 +1032,9 @@ func set_state(value: int) -> void:
 # * Returns CFConst.ReturnCode.CHANGED if the card actually changed rotation.
 # * Returns CFConst.ReturnCode.OK if the card was already in the correct rotation.
 # * Returns CFConst.ReturnCode.FAILED if an invalid rotation was specified.
+func set_card_rotation_setter(value: int) -> int:
+	return set_card_rotation(value)
+
 func set_card_rotation(
 			value: int,
 			toggle := false,
@@ -1230,7 +1240,7 @@ func move_to(targetHost: Node,
 			emit_signal("card_moved_to_hand",
 					self,
 					"card_moved_to_hand",
-					 {
+					{
 						"destination": targetHost.name,
 						"source": parentHost.name,
 						"tags": tags
@@ -1309,12 +1319,12 @@ func move_to(targetHost: Node,
 					_placement_slot = board_position
 				else:
 					_determine_target_position_from_mouse()
-				raise()
+				move_to_front()
 			set_state(CardState.DROPPING_TO_BOARD)
 			emit_signal("card_moved_to_board",
 					self,
 					"card_moved_to_board",
-					 {
+					{
 						"destination": targetHost.name,
 						"source": parentHost.name,
 						"tags": tags
@@ -1391,7 +1401,7 @@ func move_to(targetHost: Node,
 					if _placement_slot:
 							_placement_slot.occupying_card = null
 							_placement_slot = null
-				raise()
+				move_to_front()
 		elif parentHost == targetHost and index != get_my_card_index():
 			parentHost.move_child(self,
 					parentHost.translate_card_index_to_node_index(index))
@@ -1438,17 +1448,13 @@ func execute_scripts(
 	# There should be an SP.KEY_IS_OPTIONAL definition per state
 	# E.g. if board scripts are optional, but hand scripts are not
 	# Then you'd include an "is_optional_board" key at the same level as "board"
-	var confirm_return = CFUtils.confirm(
+	var confirm_return = await CFUtils.confirm(
 		card_scripts,
 		canonical_name,
 		trigger,
 		state_exec)
-	if confirm_return is GDScriptFunctionState: # Still working.
-		confirm_return = await confirm_return.completed
-		# If the player chooses not to play an optional cost
-		# We consider the whole cost dry run unsuccesful
-		if not confirm_return:
-			state_scripts = []
+	if not confirm_return:
+		state_scripts = []
 	# If the state_scripts return a dictionary entry
 	# it means it's a multiple choice between two scripts
 	if typeof(state_scripts) == TYPE_DICTIONARY:
@@ -1495,11 +1501,9 @@ func execute_scripts(
 			if not sceng.all_tasks_completed:
 				await sceng.tasks_completed
 			# warning-ignore:void_assignment
-			var func_return = common_post_execution_scripts(trigger)
-			# We make sure this function does to return until all
+			await common_post_execution_scripts(trigger)
+			# above await: We make sure this function does to return until all
 			# custom post execution scripts have also finished
-			if func_return is GDScriptFunctionState: # Still working.
-				func_return = await func_return.completed
 		# This will only trigger when costs could not be paid, and will
 		# execute the "is_else" tasks
 		elif not sceng.can_all_costs_be_paid and not only_cost_check:
@@ -1627,6 +1631,7 @@ func attach_to_host(
 
 # Overrides the built-in get_class to
 # Returns "Card" instead of "Area2D"
+@warning_ignore("native_method_override")
 func get_class(): return "Card"
 
 
