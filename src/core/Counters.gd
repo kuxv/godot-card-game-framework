@@ -136,7 +136,7 @@ func mod_counter(counter_name: String,
 # Returns the value of the specified counter.
 # Takes into account temp_count_modifiers and alterants
 func get_counter(counter_name: String, requesting_object = null) -> int:
-	var count = get_counter_and_alterants(counter_name, requesting_object).count
+	var count = (await get_counter_and_alterants(counter_name, requesting_object)).count
 	return(count)
 
 
@@ -161,13 +161,11 @@ func get_counter_and_alterants(
 		"alterants_details": {}
 	}
 	if requesting_object:
-		alteration = CFScriptUtils.get_altered_value(
+		alteration = await CFScriptUtils.get_altered_value(
 			requesting_object,
 			"get_counter",
 			{SP.KEY_COUNTER_NAME: counter_name,},
 			counters[counter_name])
-		if alteration is GDScriptFunctionState:
-			alteration = await alteration.completed
 	# The first element is always the total modifier from all alterants
 	count += alteration.value_alteration
 	var temp_modifiers = {
