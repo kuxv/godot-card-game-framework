@@ -14,23 +14,23 @@ extends Area2D
 #
 # See _process_card_state()
 enum CardState {
-	IN_HAND					#0
-	FOCUSED_IN_HAND			#1
-	MOVING_TO_CONTAINER		#2
-	REORGANIZING			#3
-	PUSHED_ASIDE			#4
-	DRAGGED					#5
-	DROPPING_TO_BOARD		#6
-	ON_PLAY_BOARD			#7
-	FOCUSED_ON_BOARD		#8
-	IN_PILE					#9
-	VIEWED_IN_PILE			#10
-	IN_POPUP				#11
-	FOCUSED_IN_POPUP		#12
-	VIEWPORT_FOCUS			#13
-	PREVIEW					#14
-	DECKBUILDER_GRID		#15
-	MOVING_TO_SPAWN_DESTINATION		#16
+	IN_HAND,						#0
+	FOCUSED_IN_HAND,				#1
+	MOVING_TO_CONTAINER,			#2
+	REORGANIZING,					#3
+	PUSHED_ASIDE,					#4
+	DRAGGED,						#5
+	DROPPING_TO_BOARD,				#6
+	ON_PLAY_BOARD,					#7
+	FOCUSED_ON_BOARD,				#8
+	IN_PILE,						#9
+	VIEWED_IN_PILE,					#10
+	IN_POPUP,						#11
+	FOCUSED_IN_POPUP,				#12
+	VIEWPORT_FOCUS,					#13
+	PREVIEW,						#14
+	DECKBUILDER_GRID,				#15
+	MOVING_TO_SPAWN_DESTINATION,	#16
 }
 # Specifies where a card is allowed to drop on the board
 #
@@ -40,26 +40,26 @@ enum CardState {
 # * ANY_GRID: Cards can only be manually dropped in BoardPlacementGrids
 # * ANYWHERE: Cards can only be manually dropped anywhere on the board
 enum BoardPlacement{
-	NONE
-	SPECIFIC_GRID
-	GRID_AUTOPLACEMENT
-	ANY_GRID
-	ANYWHERE
+	NONE,
+	SPECIFIC_GRID,
+	GRID_AUTOPLACEMENT,
+	ANY_GRID,
+	ANYWHERE,
 }
 enum AttachmentMode{
-	DO_NOT_ATTACH
-	ATTACH_BEHIND
-	ATTACH_IN_FRONT
+	DO_NOT_ATTACH,
+	ATTACH_BEHIND,
+	ATTACH_IN_FRONT,
 }
 enum AttachmentOffset{
-	TOP_LEFT
-	TOP
-	TOP_RIGHT
-	RIGHT
-	LEFT
-	BOTTOM_LEFT
-	BOTTOM
-	BOTTOM_RIGHT
+	TOP_LEFT,
+	TOP,
+	TOP_RIGHT,
+	RIGHT,
+	LEFT,
+	BOTTOM_LEFT,
+	BOTTOM,
+	BOTTOM_RIGHT,
 }
 # Used to spawn CardChoices. We have to add the consts together
 # before passing to the preload, or the parser complains.

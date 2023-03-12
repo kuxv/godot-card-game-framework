@@ -16,16 +16,16 @@ signal shuffle_completed
 # All other options will automatically adjust the position of the
 # CardContainer if the resolution changes
 enum Anchors{
-	NONE
-	TOP_RIGHT
-	TOP_MIDDLE
-	TOP_LEFT
-	RIGHT_MIDDLE
-	LEFT_MIDDLE
-	BOTTOM_RIGHT
-	BOTTOM_MIDDLE
-	BOTTOM_LEFT
-	CONTROL
+	NONE,
+	TOP_RIGHT,
+	TOP_MIDDLE,
+	TOP_LEFT,
+	RIGHT_MIDDLE,
+	LEFT_MIDDLE,
+	BOTTOM_RIGHT,
+	BOTTOM_MIDDLE,
+	BOTTOM_LEFT,
+	CONTROL,
 }
 
 # Spefifies the anchor of the card on the screen layout

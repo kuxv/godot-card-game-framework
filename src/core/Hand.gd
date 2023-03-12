@@ -6,10 +6,10 @@ extends CardContainer
 # Specifies the behaviour to follow when trying to draw a card and we
 # exceed our hand size
 enum ExcessCardsBehaviour {
-	DISALLOW
-	ALLOW
-	DISCARD_DRAWN
-	DISCARD_OLDEST
+	DISALLOW,
+	ALLOW,
+	DISCARD_DRAWN,
+	DISCARD_OLDEST,
 }
 
 # The maximum amount of cards allowed to draw in this hand
