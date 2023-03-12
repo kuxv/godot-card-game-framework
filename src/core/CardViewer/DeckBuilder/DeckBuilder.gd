@@ -153,10 +153,9 @@ func _on_Save_pressed() -> void:
 		for card_object in category.get_node("CategoryCards").get_children():
 			deck_dictionary.cards[card_object.card_name] = card_object.quantity
 			cards_count += card_object.quantity
-	deck_dictionary["total"] = cards_count
-	var dir = Directory.new()
-	if not dir.dir_exists(CFConst.DECKS_PATH):
-		dir.make_dir(CFConst.DECKS_PATH)
+	deck_dictionary["total"] = cards_count	
+	if not DirAccess.dir_exists_absolute(CFConst.DECKS_PATH):
+		DirAccess.make_dir_absolute(CFConst.DECKS_PATH)
 	var file = FileAccess.open(CFConst.DECKS_PATH + _deck_name.text + '.json', FileAccess.WRITE)
 	file.store_string(JSON.stringify(deck_dictionary, '\t'))
 	file.close()
@@ -166,9 +165,8 @@ func _on_Save_pressed() -> void:
 # Deletes the currently named deck, but doesn't clear the list
 # This way the user can re-save the deck, if they deleted by mistake
 func _on_Delete_pressed() -> void:
-	var dir = Directory.new()
-	if dir.dir_exists(CFConst.DECKS_PATH):
-		var op_result = dir.remove(CFConst.DECKS_PATH + _deck_name.text + '.json')
+	if DirAccess.dir_exists_absolute(CFConst.DECKS_PATH):
+		var op_result = DirAccess.remove_absolute(CFConst.DECKS_PATH + _deck_name.text + '.json')
 		if op_result == OK:
 			_set_notice("Deck deleted from disk. Current list not cleared")
 		elif op_result == FAILED:

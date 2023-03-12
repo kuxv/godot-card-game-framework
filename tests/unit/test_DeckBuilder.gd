@@ -106,10 +106,9 @@ func test_save_load_reset():
 	assert_eq(deckbuilder._notice.text, "Deck saved")
 	assert_true(deckbuilder._notice.get_node("Tween").is_active(),
 			"notice started tweening")
-	var dir = Directory.new()
-	assert_true(dir.dir_exists(CFConst.DECKS_PATH),
+	assert_true(DirAccess.dir_exists_absolute(CFConst.DECKS_PATH),
 			"Deck path exists")
-	assert_true(dir.file_exists(CFConst.DECKS_PATH + deck_name + ".json"),
+	assert_true(FileAccess.file_exists(CFConst.DECKS_PATH + deck_name + ".json"),
 			"Deck saved correctly")
 	var file = FileAccess.open(CFConst.DECKS_PATH + deck_name + '.json', FileAccess.READ)
 	var test_json_conv = JSON.new()
@@ -158,9 +157,9 @@ func test_save_load_reset():
 	assert_eq(deckbuilder._notice.text,
 			"Deck deleted from disk. Current list not cleared")
 	assert_true(deckbuilder._notice.get_node("Tween").is_active())
-	assert_true(dir.dir_exists(CFConst.DECKS_PATH),
+	assert_true(DirAccess.dir_exists_absolute(CFConst.DECKS_PATH),
 			"Deck path not deleted")
-	assert_false(dir.file_exists(CFConst.DECKS_PATH + deck_name + ".json"),
+	assert_false(FileAccess.file_exists_absolute(CFConst.DECKS_PATH + deck_name + ".json"),
 			"GUT Deck deleted")
 
 func test_filters() -> void:

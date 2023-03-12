@@ -75,9 +75,7 @@ static func array_join(arr: Array, separator = "") -> String:
 # use list_imported_in_directory() instead
 static func list_files_in_directory(path: String, prepend_needed := "", full_path := false) -> Array:
 	var files := []
-	var dir := Directory.new()
-	# warning-ignore:return_value_discarded
-	dir.open(path)
+	var dir := DirAccess.open(path)
 	# warning-ignore:return_value_discarded
 	dir.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 	while true:
@@ -104,9 +102,7 @@ static func list_files_in_directory(path: String, prepend_needed := "", full_pat
 # filenames, and grab the filename from there.
 static func list_imported_in_directory(path: String, full_path := false) -> Array:
 	var files := []
-	var dir := Directory.new()
-	# warning-ignore:return_value_discarded
-	dir.open(path)
+	var dir := DirAccess.open(path)
 	# warning-ignore:return_value_discarded
 	dir.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
 	while true:
