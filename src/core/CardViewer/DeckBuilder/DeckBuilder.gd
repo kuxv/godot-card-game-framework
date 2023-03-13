@@ -202,7 +202,7 @@ func generate_random_deck_name() -> String:
 	for part in ["adverb", "adjective", "noun", "second_noun", "append"]:
 		if deck_name.get(part):
 			compiled_deck_name.append(deck_name.get(part))
-	' '.join(return(compiled_deck_name).strip_edges())
+	return(' '.join(compiled_deck_name).strip_edges())
 
 # Clears deck list
 func _on_Reset_pressed() -> void:

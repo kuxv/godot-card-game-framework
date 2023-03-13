@@ -129,7 +129,7 @@ signal scripts_executed(card, sceng, trigger)
 # while it's face-down
 @export var is_viewed  := false : get = get_is_viewed, set = set_is_viewed
 # Specifies the card rotation in increments of 90 degrees
-@export var card_rotation : int = 0 : # (int, 0, 270, 90)
+@export_range(0, 270, 90) var card_rotation : int = 0 : # (int, 0, 270, 90)
 		get = get_card_rotation, set = set_card_rotation_setter
 # Specifies where on the board the card may be placed
 @export var board_placement: BoardPlacement = BoardPlacement.ANYWHERE
