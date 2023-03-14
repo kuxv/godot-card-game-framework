@@ -10,7 +10,7 @@ const _TOKEN_SCENE = preload(_TOKEN_SCENE_FILE)
 # A flag on whether the token drawer is currently open
 var is_drawer_open := false : set = set_is_drawer_open
 
-@onready var _tween : Tween = $Tween
+var _tween : Tween
 # Stores a reference to the Card that is hosting this node
 @onready var owner_card = get_parent().get_parent()
 
@@ -49,19 +49,14 @@ func token_drawer(requested_state := true) -> void:
 
 	var td := $Drawer
 	# We want to keep the drawer closed during the flip and movement
-	if not _tween.is_active() and \
-			not owner_card._flip_tween.is_active() and \
-			not owner_card._tween.is_active():
+	if not _tween.is_running() and \
+			not owner_card._flip_tween.is_running() and \
+			not owner_card._tween.is_running():
 		# We don't open the drawer if we don't have any tokens at all
 		if requested_state == true and $Drawer/VBoxContainer.get_child_count():
 			# To avoid tween deadlocks
 			# warning-ignore:return_value_discarded
-			_tween.remove_all()
-			# warning-ignore:return_value_discarded
-			_tween.interpolate_property(
-					td,'position', td.position,
-					Vector2(owner_card.card_size.x,td.position.y),
-					0.3, Tween.TRANS_ELASTIC, Tween.EASE_OUT)
+			_tween.kill()
 			# We make all tokens display names
 			for token in $Drawer/VBoxContainer.get_children():
 				token.expand()
@@ -69,24 +64,24 @@ func token_drawer(requested_state := true) -> void:
 			$Drawer.self_modulate.a = 1
 			is_drawer_open = true
 			# warning-ignore:return_value_discarded
-			_tween.start()
+			_tween = create_tween()
+			_tween.tween_property(td, 'position', Vector2(owner_card.card_size.x,td.position.y), 0.3) \
+			.set_trans(Tween.TRANS_ELASTIC) \
+			.set_ease(Tween.EASE_OUT)
 			# We need to make our tokens appear on top of other cards on the table
 			z_index = 99
 		else:
 			# warning-ignore:return_value_discarded
-			_tween.remove_all()
+			_tween.kill()
 			# warning-ignore:return_value_discarded
-			_tween.interpolate_property(
-					td,'position', td.position,
-					Vector2(owner_card.card_size.x - 35,
-					td.position.y),
-					0.2, Tween.TRANS_ELASTIC, Tween.EASE_IN)
-			# warning-ignore:return_value_discarded
-			_tween.start()
+			_tween = create_tween()
+			_tween.tween_property(td, 'position', Vector2(owner_card.card_size.x - 35, td.position.y), 0.2) \
+			.set_trans(Tween.TRANS_ELASTIC) \
+			.set_ease(Tween.EASE_IN)
 			# We want to consider the drawer closed
 			# only when the animation finished
 			# Otherwise it might start to open immediately again
-			await _tween.loop_finished
+			await _tween.finished
 			# When it's closed, we hide token names
 			for token in $Drawer/VBoxContainer.get_children():
 				token.retract()

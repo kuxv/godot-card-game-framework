@@ -11,7 +11,7 @@ var needed_buttons: Dictionary
 # We use this variable to check if buttons are active for performance reasons
 var _are_active := true
 
-@onready var _tween = $Tween
+var _tween : Tween
 # Hold the node which owns this node.
 @onready var owner_node = get_parent().get_parent()
 
@@ -89,10 +89,9 @@ func set_button_visible(button_name: String, value: bool) -> void:
 
 # Allows the buttons to appear gracefully
 func set_alpha(value := 1) -> void:
-	if value != modulate.a and not _tween.is_active():
-		_tween.remove_all()
-		_tween.interpolate_property(
-				self,'modulate:a',
-				modulate.a, value, 0.25,
-				Tween.TRANS_SINE, Tween.EASE_IN)
-		_tween.start()
+	if value != modulate.a and not _tween.is_running():
+		_tween.kill()
+		_tween = create_tween()
+		_tween.tween_property(self, 'modulate:a', value, 0.25) \
+		.set_trans(Tween.TRANS_SINE) \
+		.set_ease(Tween.EASE_IN)
