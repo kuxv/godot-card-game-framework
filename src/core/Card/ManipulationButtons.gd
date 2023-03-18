@@ -1,7 +1,7 @@
 class_name ManipulationButtons
 extends VBoxContainer
 
-@export var manipulation_button: PackedScene : PackedScene
+@export var manipulation_button: PackedScene
 
 # This variable hold definitions for which buttons to create on this card.
 #

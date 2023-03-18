@@ -12,8 +12,8 @@ const _INFO_PANEL_SCENE_FILE = CFConst.PATH_CORE\
 		+ "CardViewer/CVInfoPanel.tscn"
 const _INFO_PANEL_SCENE = preload(_INFO_PANEL_SCENE_FILE)
 
-@export var grid_card_object_scene: PackedScene := _GRID_CARD_OBJECT_SCENE
-@export var info_panel_scene: PackedScene := _INFO_PANEL_SCENE
+@export var grid_card_object_scene: PackedScene = _GRID_CARD_OBJECT_SCENE
+@export var info_panel_scene: PackedScene = _INFO_PANEL_SCENE
 
 var selected_cards := []
 var selection_count : int
@@ -109,13 +109,13 @@ func initiate_selection(
 		return
 	match selection_type:
 		"min":
-			window_title = "Select at least " + str(selection_count) + " cards."
+			title = "Select at least " + str(selection_count) + " cards."
 		"max":
-			window_title = "Select at most " + str(selection_count) + " cards."
+			title = "Select at most " + str(selection_count) + " cards."
 		"equal":
-			window_title = "Select exactly " + str(selection_count) + " cards."
+			title = "Select exactly " + str(selection_count) + " cards."
 		"display":
-			window_title = "Press OK to continue"
+			title = "Press OK to continue"
 	for c in _card_grid.get_children():
 		c.queue_free()
 	# We use this to quickly store a copy of a card object to use to get
@@ -128,7 +128,7 @@ func initiate_selection(
 		if typeof(card) == TYPE_STRING:
 			dupe_selection = cfc.instance_card(card)
 		else:
-			dupe_selection = card.duplicate(DUPLICATE_USE_INSTANCING)
+			dupe_selection = card.duplicate(DUPLICATE_USE_INSTANCIATING)
 			# This prevents the card from being scripted with the
 			# signal propagator and other things going via groups
 			dupe_selection.remove_from_group("cards")

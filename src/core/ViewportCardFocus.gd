@@ -4,8 +4,8 @@
 class_name ViewportCardFocus
 extends Node2D
 
-@export var board_scene: PackedScene : PackedScene
-@export var info_panel_scene: PackedScene : PackedScene
+@export var board_scene: PackedScene
+@export var info_panel_scene: PackedScene
 # This array holds all the previously focused cards.
 var _previously_focused_cards := {}
 # This var hold the currently focused card duplicate.
@@ -108,7 +108,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 			dupe_focus.set_is_faceup(card.is_faceup, true)
 			dupe_focus.is_viewed = card.is_viewed
 		else:
-			dupe_focus = card.duplicate(DUPLICATE_USE_INSTANCING)
+			dupe_focus = card.duplicate(DUPLICATE_USE_INSTANTIATION)
 			dupe_focus.remove_from_group("cards")
 			_extra_dupe_preparation(dupe_focus, card)
 			# We display a "pure" version of the card
