@@ -38,7 +38,7 @@ func _init(
 		_subject) -> void:
 	subject = _subject
 	for alter_task_def in scripts_queue.duplicate(true):
-		var alter_task := ScriptAlter.new(
+		var alter_task := await ScriptAlter.new(
 				alter_task_def,
 				trigger_object,
 				alterant_object,
