@@ -3,7 +3,7 @@
 class_name CardBackTexture
 extends CardBack
 
-@export var back_texture: CompressedTexture2D: CompressedTexture2D
+@export var back_texture: CompressedTexture2D
 
 @onready var card_texture := $CardTexture
 

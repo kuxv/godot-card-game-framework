@@ -68,7 +68,7 @@ func initiate_selection(
 		print("DEBUG INFO:SelectionWindow: Initiated Selection")
 	# We don't allow the player to close the popup with the close button
 	# as that will not send the mandatory signal to unpause the game
-	get_close_button().visible = false
+#	get_close_button().visible = false # TODO: fixme
 	selection_count = _selection_count
 	selection_type = _selection_type
 	is_selection_optional = _selection_optional
@@ -128,7 +128,7 @@ func initiate_selection(
 		if typeof(card) == TYPE_STRING:
 			dupe_selection = cfc.instance_card(card)
 		else:
-			dupe_selection = card.duplicate(DUPLICATE_USE_INSTANCIATING)
+			dupe_selection = card.duplicate(DUPLICATE_USE_INSTANTIATION)
 			# This prevents the card from being scripted with the
 			# signal propagator and other things going via groups
 			dupe_selection.remove_from_group("cards")
@@ -206,7 +206,7 @@ func on_selection_gui_input(event: InputEvent, dupe_selection: Card, origin_card
 		# So whenever they exceed the max, we deselect the first card in the array.
 		if selection_type in ["equal", "max"]  and selected_cards.size() > selection_count:
 			_card_dupe_map[selected_cards[0]].highlight.set_highlight(false)
-			selected_cards.remove(0)
+			selected_cards.remove_at(0)
 
 
 # Manually selects cards based on their index.

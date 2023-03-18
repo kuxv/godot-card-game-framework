@@ -8,7 +8,7 @@ extends GridContainer
 
 @export var info_panel_scene: PackedScene
 # How many panels need to be added before adding an extra column to the grid
-@export var panel_column_threshold: int := 6
+@export var panel_column_threshold: int = 6
 
 # This dictionary holds all detail scenes added to the list
 # Each entry is an id for the detail (typically its tag or keyword)

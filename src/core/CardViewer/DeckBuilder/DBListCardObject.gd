@@ -94,9 +94,9 @@ func set_quantity(value) -> void:
 # the users with +/- buttons and a freeform integer line editor.
 func setup_max_quantity(force := 0) -> void:
 	if force:
-		 max_allowed = force
+		max_allowed = force
 	elif card_properties.get("_max_allowed",0):
-		 max_allowed = card_properties.get("_max_allowed")
+		max_allowed = card_properties.get("_max_allowed")
 	_quantity_edit.maximum = max_allowed
 	_quantity_edit.placeholder_text = \
 			"Max " + str(max_allowed)
