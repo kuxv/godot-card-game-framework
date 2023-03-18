@@ -217,15 +217,12 @@ func _on_RandomizeName_pressed() -> void:
 
 
 # Shows a fading text to the user notifying them of recent action results.
-func _set_notice(text: String, colour := Color(0,1,0)) -> void:
-	var tween: Tween = _notice.get_node("Tween")
+func _set_notice(text: String, colour := Color(0,1,0)) -> void:	
 	_notice.text = text
 	_notice.modulate.a = 1
 	_notice.set("custom_colors/font_color",colour)
-	# warning-ignore:return_value_discarded
-	tween.remove_all()
-	# warning-ignore:return_value_discarded
-	tween.interpolate_property(_notice,'modulate:a',
-			1, 0, 2, Tween.TRANS_SINE, Tween.EASE_IN)
-	# warning-ignore:return_value_discarded
-	tween.start()
+	var tween = _notice.create_tween()
+	tween.tween_property(_notice, 'modulate:a', 0, 2) \
+	.from(1) \
+	.set_trans(Tween.TRANS_SINE) \
+	.set_ease(Tween.EASE_IN) \

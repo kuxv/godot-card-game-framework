@@ -285,8 +285,8 @@ var spawn_destination
 # This variable will point to the scene which controls the targeting arrow
 @onready var targeting_arrow
 
-@onready var _tween := $Tween
-@onready var _flip_tween := $Control/FlipTween
+var _tween : Tween
+var _flip_tween : Tween # $Control/FlipTween
 @onready var _control := $Control
 # This is the control node we've setup to host the card_front design
 @onready var _card_front_container := $Control/Front
@@ -364,12 +364,12 @@ func _init_card_name() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta) -> void:
-	if $Tween.is_active() and not cfc.ut: # Debug code for catch potential Tween deadlocks
+	if _tween.is_running() and not cfc.ut: # Debug code for catch potential Tween deadlocks
 		_tween_stuck_time += delta
 		if _tween_stuck_time > 5 and int(fmod(_tween_stuck_time,3)) == 2 :
 			print_debug("Tween Stuck for ",_tween_stuck_time,
-					"seconds. Reports leftover runtime: ",$Tween.get_runtime ( ))
-			$Tween.remove_all()
+					"seconds. Reports leftover runtime: ",_tween.get_total_elapsed_time())
+			_tween.kill()
 			_tween_stuck_time = 0
 	else:
 		_tween_stuck_time = 0
@@ -1061,10 +1061,11 @@ func set_card_rotation(
 				and not get_parent().is_in_group("hands") \
 				and cfc.game_settings.hand_use_oval_shape \
 				and $Control.rotation != 0.0 \
-				and not $Tween.is_active():
+				and not _tween.is_running():
 			_add_tween_rotation($Control.rotation,value)
+			_tween.stop()
 			if start_tween:
-				$Tween.start()
+				_tween.play()
 	else:
 		# If the toggle was specified then if the card matches the requested
 		# rotation, we reset it to 0 degrees
@@ -1089,8 +1090,9 @@ func set_card_rotation(
 			# We only start the animation if this flag is set to true
 			# This allows us to set the card to rotate on the next
 			# available tween, instead of immediately.
+			_tween.stop()
 			if start_tween:
-				$Tween.start()
+				_tween.start()
 			#$Control/Tokens.rotation_degrees = -value # need to figure this out
 			# When the card actually changes orientation
 			# We report that it changed.
@@ -1266,7 +1268,7 @@ func move_to(targetHost: Node,
 			else:
 				# Added because sometimes it ended up stuck and a card remained
 				# visible on top of deck
-				$Tween.remove_all()
+				$Tween.kill()
 				# We need to adjust the end position based on the local rect inside
 				# the container control node
 				# So we transform global coordinates to container rect coordinates.
@@ -1296,9 +1298,9 @@ func move_to(targetHost: Node,
 				# One for the fancy move, and then the move to the final position.
 				# If we don't then the card will appear to teleport
 				# to the pile before starting animation
-				await $Tween.loop_finished
+				await _tween.finished
 				if cfc.game_settings.fancy_movement:
-					await $Tween.loop_finished
+					await _tween.finished
 				targetHost.reorganize_stack()
 		else:
 			interruptTweening()
@@ -1672,7 +1674,7 @@ func interruptTweening() ->void:
 	if not cfc.game_settings.fancy_movement or (cfc.game_settings.fancy_movement
 			and (_fancy_move_second_part
 			or state != CardState.MOVING_TO_CONTAINER)):
-		$Tween.remove_all()
+		_tween.kill()
 		set_state(CardState.IN_HAND)
 
 
@@ -1830,13 +1832,13 @@ func animate_shuffle(anim_speed : float, style : int) -> void:
 			pos_speed,start_pos_anim,Tween.EASE_OUT)
 	if rot_anim:
 		_add_tween_rotation(0,random_rot,rot_speed,rot_anim,Tween.EASE_OUT)
-	_tween.start()
-	await _tween.loop_finished
+	_tween.play()
+	await _tween.finished
 	_add_tween_position(center_card_pop_position,starting_card_position,
 			pos_speed,end_pos_anim,Tween.EASE_IN)
 	if rot_anim:
 		_add_tween_rotation(random_rot,0,rot_speed,rot_anim,Tween.EASE_IN)
-	_tween.start()
+	_tween.play()
 
 
 # This function can be overriden by any class extending Card, in order to provide
@@ -1958,7 +1960,7 @@ func _organize_attachments() -> void:
 
 			# We don't want to try and move it if it's still tweening.
 			# But if it isn't, we make sure it always follows its parent
-			if not card.get_node('Tween').is_active() and \
+			if not card._tween.is_running() and \
 					card.state in \
 					[CardState.ON_PLAY_BOARD,CardState.FOCUSED_ON_BOARD]:
 				card.global_position = global_position + \
@@ -2071,9 +2073,9 @@ func _determine_idle_state() -> void:
 func _tween_interpolate_visibility(visibility: float, time: float) -> void:
 	# We only want to do something if we're actually doing something
 	if modulate[3] != visibility:
-		$Tween.interpolate_property(self,'modulate',
-				modulate, Color(1, 1, 1, visibility), time,
-				Tween.TRANS_QUAD, Tween.EASE_OUT)
+		_tween.tween_property(self,'modulate', Color(1, 1, 1, visibility), time) \
+		.set_trans(Tween.TRANS_QUAD) \
+		.set_ease(Tween.EASE_OUT)
 
 
 # Clears all attachment/hosting status.

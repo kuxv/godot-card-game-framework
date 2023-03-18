@@ -150,17 +150,14 @@ func focus_card(card: Card, show_preview := true) -> void:
 		# We always make sure to clean tweening conflicts
 		$VBC/Focus._tween.kill()
 		# We do a nice alpha-modulate tween
+		$VBC/Focus._tween = $VBC/Focus.create_tween()
 		$VBC/Focus._tween.set_trans(Tween.TRANS_SINE)
 		$VBC/Focus._tween.set_ease(Tween.EASE_IN)
 		$VBC/Focus._tween.tween_property($VBC/Focus, 'modulate', Color(1,1,1,1), 0.25)		
 		if focus_info.visible_details > 0:
 			$VBC/Focus._tween.tween_property(focus_info, 'modulate', Color(1,1,1,1), 0.25)
-#			$VBC/Focus._tween.set_trans(Tween.TRANS_SINE)
-#			$VBC/Focus._tween.set_ease(Tween.EASE_IN)
 		else:
 			$VBC/Focus._tween.tween_property(focus_info, 'modulate', Color(1,1,1,0), 0.25)
-#			$VBC/Focus._tween.set_trans(Tween.TRANS_SINE)
-#			$VBC/Focus._tween.set_ease(Tween.EASE_IN)
 		card_focus.visible = show_preview
 		# Now that the display panels can expand horizontally
 		# we need to set their parent container size to 0 here
@@ -175,14 +172,13 @@ func focus_card(card: Card, show_preview := true) -> void:
 func unfocus(card: Card) -> void:
 	if _current_focus_source == card:
 		_current_focus_source = null
-		$VBC/Focus._tween.remove_all()
+		$VBC/Focus._tween.kill()
+		$VBC/Focus._tween = $VBC/Focus.create_tween()
 		$VBC/Focus._tween.set_trans(Tween.TRANS_SINE)
 		$VBC/Focus._tween.set_ease(Tween.EASE_IN)
 		$VBC/Focus._tween.tween_property($VBC/Focus, 'modulate', Color(1,1,1,0), 0.25)
 		if focus_info.modulate != Color(1,1,1,0):
 			$VBC/Focus._tween.tween_property(focus_info, 'modulate', Color(1,1,1,0), 0.25)
-#			$VBC/Focus._tween.set_trans(Tween.TRANS_SINE)
-#			$VBC/Focus._tween.set_ease(Tween.EASE_IN)
 
 
 # Tells the currently focused card to stop focusing.

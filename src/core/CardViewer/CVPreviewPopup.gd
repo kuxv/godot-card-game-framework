@@ -11,7 +11,7 @@ var _placement_initialized := false
 var _visible = true
 # The popup panel which contains the card.
 @onready var focus_info := $FocusInfo
-@onready var _tween := $Tween
+var _tween : Tween
 
 func _ready() -> void:
 	# warning-ignore:return_value_discarded
@@ -24,7 +24,7 @@ func _process(_delta: float) -> void:
 		_set_placement()
 
 func _set_placement() -> void:
-	if _tween.is_active():
+	if _tween.is_running():
 		return
 	var new_position : Vector2 = get_preview_placement()
 	# We only want to tween, if the card position is changing dramatically
@@ -42,8 +42,11 @@ func _set_placement() -> void:
 		# To avoid that, we put a small delay, to ensure the info panels have neen repopulated
 		if _tween_wait > 10:
 			_tween_wait = 0
-			_tween.interpolate_property(self, "position", position, new_position, 0.2, Tween.TRANS_EXPO, Tween.EASE_IN)
-			_tween.start()
+			_tween.kill()
+			_tween = create_tween()
+			_tween.tween_property(self, "position", new_position, 0.2) \
+			.set_trans(Tween.TRANS_EXPO) \
+			.set_ease(Tween.EASE_IN)
 #			print_debug([preview_card, get_preview_placement()])
 	else:
 		position = new_position
