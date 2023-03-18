@@ -302,10 +302,13 @@ static func convert_texture_to_image(texture, is_lossless = false) -> ImageTextu
 		tex = load(texture)
 	else:
 #		print_debug(texture)
-		tex = texture
-	var new_texture = ImageTexture.new();
-	if is_lossless:
-		new_texture.storage = ImageTexture.STORAGE_COMPRESS_LOSSLESS
+		tex = texture	
 	var image = tex.get_data()
-	new_texture.create_from_image(image)
-	return(new_texture)
+	var new_texture = ImageTexture.new();
+	return new_texture.create_from_image(image)
+#	if is_lossless:
+#		var new_texture = ImageTexture.new();
+#		return new_texture.create_from_image(image)
+#	else:
+#		var new_texture = CompressedTexture2D.new();
+#		return new_texture.create_from_image(image)
