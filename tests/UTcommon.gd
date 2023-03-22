@@ -161,12 +161,8 @@ func move_mouse(target_position: Vector2, interpolation_speed := "fast") -> void
 	await yield_for(mouse_yield_wait).YIELD
 
 func execute_with_yield(card: Card) -> void:
-	var sceng = card.execute_scripts()
-	if sceng is GDScriptFunctionState and sceng.is_valid():
-		sceng = await yield_to(sceng, "completed", 1).YIELD
-
+	var sceng = await card.execute_scripts()
 
 func execute_with_target(card: Card, target: Card) -> void:
-	var sceng = card.execute_scripts()
+	var sceng = await card.execute_scripts()
 	target_card(card,target,"slow")
-	sceng = await sceng.completed
