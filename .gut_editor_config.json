@@ -1,5 +1,6 @@
 {
  "background_color": "ff343434",
+ "compact_mode": false,
  "config_file": "res://.gutconfig.json",
  "dirs": [
   "res://tests/unit",
@@ -10,6 +11,7 @@
  "font_color": "ffc1bfce",
  "font_name": "CourierPrime",
  "font_size": 15,
+ "gut_on_top": true,
  "hide_orphans": false,
  "ignore_pause": true,
  "include_subdirs": false,
@@ -18,6 +20,15 @@
  "junit_xml_timestamp": false,
  "log_level": 3,
  "opacity": 70,
+ "paint_after": 0.1,
+ "panel_options": {
+  "font_name": "CourierPrime",
+  "font_size": 30,
+  "hide_output_text": false,
+  "hide_result_tree": false,
+  "hide_settings": false,
+  "use_colors": false
+ },
  "post_run_script": "",
  "pre_run_script": "",
  "prefix": "test_",
@@ -25,16 +36,10 @@
  "should_exit": false,
  "should_exit_on_success": false,
  "should_maximize": true,
- "compact_mode": false,
  "show_help": false,
  "suffix": ".gd",
  "tests": [
 
  ],
- "unit_test_name": "test_modify_properties",
- "gut_on_top": true,
- "panel_options": {
-  "font_name": "CourierPrime",
-  "font_size": 30
- }
+ "unit_test_name": "test_modify_properties"
 }
