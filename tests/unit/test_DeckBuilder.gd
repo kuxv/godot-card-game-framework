@@ -159,7 +159,7 @@ func test_save_load_reset():
 	assert_true(deckbuilder._notice.get_node("Tween").is_active())
 	assert_true(DirAccess.dir_exists_absolute(CFConst.DECKS_PATH),
 			"Deck path not deleted")
-	assert_false(FileAccess.file_exists_absolute(CFConst.DECKS_PATH + deck_name + ".json"),
+	assert_false(FileAccess.file_exists(CFConst.DECKS_PATH + deck_name + ".json"),
 			"GUT Deck deleted")
 
 func test_filters() -> void:
