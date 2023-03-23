@@ -4,7 +4,7 @@ class TestSubjectTarget:
 	extends "res://tests/ScEng_common.gd"
 
 	func test_subject_target():
-		await table_move(card, Vector2(100,200)).completed
+		await table_move(card, Vector2(100,200))
 		card.scripts = {"manual": {"board": [
 				{"name": "rotate_card",
 				"subject": "target",
@@ -13,16 +13,17 @@ class TestSubjectTarget:
 				"subject": "target",
 				"degrees": 90}
 				]}}
-		var scripting_engine = card.execute_scripts()
-		if scripting_engine is GDScriptFunctionState: # Still seeking...
-			await yield_to(card.targeting_arrow, "initiated_targeting", 0.2).YIELD
+		var scripting_engine = await card.execute_scripts()
+		await yield_to(card.targeting_arrow, "initiated_targeting", 0.2).YIELD
 		#watch_signals(scripting_engine)
-		await yield_to(target_card(card,card), "completed", 0.1).YIELD
+		await target_card(card,card)
+		##await yield_to(await target_card(card,card), "completed", 0.1).YIELD
 	#	await target_card(card,card).completed
 		await yield_to(card._tween, "loop_finished", 0.4).YIELD
 		assert_eq(card.card_rotation, 270,
 				"First rotation should happen before targetting second time")
-		await yield_to(target_card(card,card), "completed", 0.1).YIELD
+		await target_card(card,card)
+		##await yield_to(target_card(card,card), "completed", 0.1).YIELD
 		await yield_to(card._tween, "loop_finished", 0.4).YIELD
 		assert_eq(card.card_rotation, 90,
 				"Second rotation should also happen")
@@ -36,8 +37,8 @@ class TestSubjectBoardseek:
 		var target2: Card = cards[2]
 		var ttype : String = target.properties["Type"]
 		var ttype2 : String = target2.properties["Type"]
-		await table_move(target, Vector2(500,200)).completed
-		await table_move(cards[2], Vector2(800,200)).completed
+		await table_move(target, Vector2(500,200))
+		await table_move(cards[2], Vector2(800,200))
 		card.scripts = {"manual": {"hand": [
 				{"name": "rotate_card",
 				"subject": "boardseek",
@@ -50,7 +51,7 @@ class TestSubjectBoardseek:
 				"filter_state_seek": [{"filter_properties": {"Type": ttype2}}],
 				"degrees": 90}]}}
 	# warning-ignore:unused_variable
-		var scripting_engine = card.execute_scripts()
+		var scripting_engine = await card.execute_scripts()
 		await yield_to(target._tween, "loop_finished", 1).YIELD
 		assert_eq(target.card_rotation, 180,
 				"Card on board matching property should be rotated 90 degrees")
@@ -87,8 +88,8 @@ class TestSubjectPrevious:
 		var target2: Card = cards[2]
 	# warning-ignore:unused_variable
 		var ttype : String = target.properties["Type"]
-		await table_move(target, Vector2(500,200)).completed
-		await table_move(cards[2], Vector2(800,200)).completed
+		await table_move(target, Vector2(500,200))
+		await table_move(cards[2], Vector2(800,200))
 		card.scripts = {"manual": {"hand": [
 				{"name": "rotate_card",
 				"subject": "boardseek",
@@ -99,7 +100,7 @@ class TestSubjectPrevious:
 				"subject": "previous",
 				"set_faceup": false}]}}
 	# warning-ignore:unused_variable
-		var scripting_engine = card.execute_scripts()
+		var scripting_engine = await card.execute_scripts()
 		await yield_to(target._tween, "loop_finished", 1).YIELD
 		assert_false(target.is_faceup,
 				"Target should be pre-selected to be flipped")
@@ -201,13 +202,13 @@ class TestSubjectPreviousWithFilters:
 				},
 			}
 		card._debugger_hook = true
-		await execute_with_target(card,cards[2]).completed
+		await execute_with_target(card,cards[2])
 		await yield_for(0.3).YIELD
-		assert_eq(board.counters.get_counter("research"),2,
+		assert_eq(await board.counters.get_counter("research"),2,
 				"Counter increased by specified amount")
-		await execute_with_target(card,cards[4]).completed
+		await execute_with_target(card,cards[4])
 		await yield_for(0.3).YIELD
-		assert_eq(board.counters.get_counter("research"),3,
+		assert_eq(await board.counters.get_counter("research"),3,
 				"Counter increased by specified amount")
 
 class TestSubjectsNext:
@@ -240,8 +241,8 @@ class TestSubjectsNext:
 					],
 				},
 			}
-		await execute_with_target(card,target).completed
+		await execute_with_target(card,target)
 		await yield_to(target._tween, "loop_finished", 0.5).YIELD
-		assert_eq(board.counters.get_counter("research"),3,
+		assert_eq(await board.counters.get_counter("research"),3,
 				"Counter set to the specified amount")
 

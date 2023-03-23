@@ -19,14 +19,14 @@ class TestNeedSubjectWithPrevious:
 				},
 				]}}
 		card.execute_scripts()
-		await move_mouse(Vector2(0,0), "fast").completed
+		await move_mouse(Vector2(0,0), "fast")
 		unclick_card_anywhere(card)
 		await yield_to(card._flip_tween, "loop_finished", 0.5).YIELD
 		await yield_to(card._flip_tween, "loop_finished", 0.5).YIELD
 		assert_true(card.is_faceup,
 				"Target should be face-up because target not found")
 		card.execute_scripts()
-		await target_card(card,target).completed
+		await target_card(card,target)
 		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		assert_false(target.is_faceup,
@@ -49,7 +49,7 @@ class TestNeedSubjectWithPrevious:
 				},
 				]}}
 		card.execute_scripts()
-		await target_card(card,target).completed
+		await target_card(card,target)
 		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		assert_true(target.is_faceup,

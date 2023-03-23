@@ -92,7 +92,7 @@ class TestCardRotatedTags:
 				"subject": "self",
 				"tags": ["GUT"],
 				"degrees": 180}]}}
-		await table_move(target, Vector2(500,100)).completed
+		await table_move(target, Vector2(500,100))
 		target.card_rotation = 90
 		await yield_to(card._tween, "loop_finished", 1).YIELD
 		assert_signal_emitted_with_parameters(
@@ -166,8 +166,8 @@ class TestCardTokenModifiedTags:
 		target_index = 1
 		
 	func test_card_token_modified_tags():
-		await table_move(target, Vector2(500,100)).completed
-		await table_move(cards[5], Vector2(100,100)).completed
+		await table_move(target, Vector2(500,100))
+		await table_move(cards[5], Vector2(100,100))
 		# warning-ignore:return_value_discarded
 		watch_signals(target)
 		watch_signals(cards[5])

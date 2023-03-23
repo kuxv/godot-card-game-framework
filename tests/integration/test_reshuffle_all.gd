@@ -3,9 +3,7 @@ extends "res://tests/UTcommon.gd"
 var cards := []
 
 func before_each():
-	var confirm_return = setup_board()
-	if confirm_return is GDScriptFunctionState: # Still working.
-		confirm_return = await confirm_return.completed
+	var confirm_return = await setup_board()
 	cards = draw_test_cards(5)
 	await yield_for(0.1).YIELD
 
@@ -14,8 +12,8 @@ func after_each():
 
 func test_fancy_reshuffle_all():
 	cfc.game_settings.fancy_movement = true
-	await drag_drop(cards[0], Vector2(300,300)).completed
-	await drag_drop(cards[4], Vector2(1000,10)).completed
+	await drag_drop(cards[0], Vector2(300,300))
+	await drag_drop(cards[4], Vector2(1000,10))
 	board.reshuffle_all_in_pile()
 	await yield_for(0.02).YIELD
 	assert_almost_eq(Vector2(300, 300),cards[0].global_position,Vector2(10,10), 
@@ -26,8 +24,8 @@ func test_fancy_reshuffle_all():
 
 func test_basic_reshuffle_all():
 	cfc.game_settings.fancy_movement = false
-	await drag_drop(cards[0], Vector2(300,300)).completed
-	await drag_drop(cards[4], Vector2(1000,10)).completed
+	await drag_drop(cards[0], Vector2(300,300))
+	await drag_drop(cards[4], Vector2(1000,10))
 	board.reshuffle_all_in_pile()
 	await yield_for(0.018).YIELD
 	assert_almost_eq(Vector2(300, 300),cards[0].global_position,Vector2(10,10), 

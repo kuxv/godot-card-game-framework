@@ -54,12 +54,12 @@ class TestStoreIntegerWithCounters:
 					}]}}
 		card.execute_scripts()
 		await yield_for(0.5).YIELD
-		assert_eq(board.counters.get_counter("credits"),7,
+		assert_eq(await board.counters.get_counter("credits"),7,
 			"2 Credits added")
 
 	func test_store_integer_with_tokens():
-		await table_move(cards[1], Vector2(800,200)).completed
-		await table_move(cards[2], Vector2(100,200)).completed
+		await table_move(cards[1], Vector2(800,200))
+		await table_move(cards[2], Vector2(100,200))
 		cards[1].tokens.mod_token("void",7)
 		cards[2].tokens.mod_token("void",1)
 		# Set all cards on the board to 2 void tokens.
@@ -128,7 +128,7 @@ class TestRetrieveIntegerTempModProperties:
 			]}
 		}
 		card.execute_scripts()
-		await target_card(card,target, "slow").completed
+		await target_card(card,target, "slow")
 		await yield_for(0.5).YIELD
 		assert_eq(hand.get_card_count(), 8,
 			"Draw the temp modified amount of cards")
@@ -168,7 +168,7 @@ class TestRetrieveIntegerTempModCounter:
 			]}
 		}
 		card.execute_scripts()
-		await target_card(card,target, "slow").completed
+		await target_card(card,target, "slow")
 		await yield_for(0.5).YIELD
 		assert_eq(hand.get_card_count(), 8,
 			"Draw the temp modified amount of cards")
@@ -199,7 +199,7 @@ class TestAdjustRetrievedInteger:
 					}]}}
 		card.execute_scripts()
 		await yield_for(0.5).YIELD
-		assert_eq(board.counters.get_counter("credits"),9,
+		assert_eq(await board.counters.get_counter("credits"),9,
 			"4 Credits added")
 
 	func test_adjust_retrieved_integer_inverted():
@@ -226,6 +226,6 @@ class TestAdjustRetrievedInteger:
 					}]}}
 		card.execute_scripts()
 		await yield_for(0.5).YIELD
-		assert_eq(board.counters.get_counter("credits"),3,
+		assert_eq(await board.counters.get_counter("credits"),3,
 			"2 Credits Removed")
 

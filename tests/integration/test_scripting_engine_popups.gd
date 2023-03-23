@@ -25,7 +25,7 @@ class TestFilteredMultipleChoice:
 					},
 				},
 		}
-		await table_move(card, Vector2(100,200)).completed
+		await table_move(card, Vector2(100,200))
 		target.is_faceup = false
 		await yield_for(0.1).YIELD
 		var menu = board.get_node("CardChoices")
@@ -130,7 +130,7 @@ class TestTaskConfimDialogueTarget:
 		await yield_for(0.5).YIELD
 		assert_true(card.targeting_arrow.is_targeting,
 				"Card started targeting once dialogue accepted")
-		await target_card(card,target).completed
+		await target_card(card,target)
 		await yield_to(card._flip_tween, "loop_finished", 0.5).YIELD
 		assert_false(card.is_faceup,
 				"Card should be face-down once the cost dialogue is accepted")
@@ -150,7 +150,7 @@ class TestScriptConfirmDialog:
 					{"name": "rotate_card",
 					"subject": "self",
 					"degrees":  180}]}}
-		await table_move(card, Vector2(500,200)).completed
+		await table_move(card, Vector2(500,200))
 		card.execute_scripts()
 		confirm = board.get_node("OptionalConfirmation")
 		assert_not_null(confirm)

@@ -6,7 +6,7 @@ class TestMoveToContainer:
 	func test_move_to_container():
 		var card: Card
 		card = cards[2]
-		await drag_drop(card, cfc.NMAP.discard.position).completed
+		await drag_drop(card, cfc.NMAP.discard.position)
 		await yield_to(card.get_node('Tween'), "loop_finished", 0.5).YIELD
 		await yield_to(card.get_node('Tween'), "loop_finished", 0.5).YIELD
 		assert_almost_eq(card.global_position,cfc.NMAP.discard.position,Vector2(2,2),
@@ -15,13 +15,13 @@ class TestMoveToContainer:
 				"The correct amount of cards are hosted")
 
 	func test_move_to_multiple_container():
-		await drag_drop(cards[2], cfc.NMAP.discard.position + Vector2(10,10)).completed
-		await move_mouse(Vector2(500,300)).completed
-		await drag_drop(cards[4], cfc.NMAP.deck.position + Vector2(10,10)).completed
-		await move_mouse(Vector2(500,300)).completed
-		await drag_drop(cards[1], cfc.NMAP.discard.position + Vector2(10,10)).completed
-		await move_mouse(Vector2(500,300)).completed
-		await drag_drop(cards[0], cfc.NMAP.deck.position + Vector2(10,10)).completed
+		await drag_drop(cards[2], cfc.NMAP.discard.position + Vector2(10,10))
+		await move_mouse(Vector2(500,300))
+		await drag_drop(cards[4], cfc.NMAP.deck.position + Vector2(10,10))
+		await move_mouse(Vector2(500,300))
+		await drag_drop(cards[1], cfc.NMAP.discard.position + Vector2(10,10))
+		await move_mouse(Vector2(500,300))
+		await drag_drop(cards[0], cfc.NMAP.deck.position + Vector2(10,10))
 		await yield_to(cards[0]._tween, "loop_finished", 0.5).YIELD
 		await yield_to(cards[0]._tween, "loop_finished", 0.5).YIELD
 		assert_almost_eq(cards[2].global_position,
@@ -47,8 +47,8 @@ class TestMoveToContainer:
 	func test_move_from_board_to_deck_to_hand():
 		var card: Card
 		card = cards[2]
-		await drag_drop(card, Vector2(1000,100)).completed
-		await drag_drop(card, cfc.NMAP.deck.position).completed
+		await drag_drop(card, Vector2(1000,100))
+		await drag_drop(card, cfc.NMAP.deck.position)
 		await yield_to(card.get_node('Tween'), "loop_finished", 0.5).YIELD
 		await yield_to(card.get_node('Tween'), "loop_finished", 0.5).YIELD
 	# warning-ignore:return_value_discarded

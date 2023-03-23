@@ -9,9 +9,7 @@ func after_all():
 	cfc.game_settings.fancy_movement = true
 
 func before_each():
-	var confirm_return = setup_main()
-	if confirm_return is GDScriptFunctionState: # Still working.
-		confirm_return = await confirm_return.completed
+	var confirm_return = await setup_main()
 	cards = draw_test_cards(5)
 	await yield_for(0.1).YIELD
 
@@ -20,7 +18,7 @@ func test_board_facedown():
 	card = cards[3]
 	var card_front = card.get_node("Control/Front")
 	var card_back = card.get_node("Control/Back")
-	await table_move(card, Vector2(600,200)).completed
+	await table_move(card, Vector2(600,200))
 	card.is_faceup = false
 	await yield_to(card._flip_tween, "loop_finished", 1).YIELD
 	assert_false(card_front.visible,
@@ -51,7 +49,7 @@ func test_board_facedown():
 	assert_almost_eq(card_back.position.x, card_front.size.x/2, 0.1,
 			"Back position.x == size.x/2 when card is turned face up again")
 
-	await move_mouse(card.global_position).completed
+	await move_mouse(card.global_position)
 	await yield_for(0.1).YIELD # Wait to allow dupe to be created
 	var dupe: Card = main._previously_focused_cards[card]
 	var dupe_front = dupe.get_node("Control/Front")
@@ -108,9 +106,9 @@ func test_board_facedown():
 	assert_true(viewed_icon.visible,
 			"View icon is visible while card is is_viewed()")
 
-	await move_mouse(card.global_position - Vector2(0,100)).completed
+	await move_mouse(card.global_position - Vector2(0,100))
 #	await yield_for(0.2).YIELD # Wait to allow dupe to be destroyed
-	await move_mouse(card.global_position).completed
+	await move_mouse(card.global_position)
 #	await yield_for(0.2).YIELD # Wait to allow dupe to be created
 	dupe = main._previously_focused_cards[card]
 	dupe_front = dupe.get_node("Control/Front")

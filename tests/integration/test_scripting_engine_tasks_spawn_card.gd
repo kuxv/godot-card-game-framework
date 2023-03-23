@@ -83,7 +83,7 @@ class TestSpawnAndModifyCard:
 		target.execute_scripts()
 		await yield_for(0.4).YIELD
 		card = board.get_card(0)
-		assert_eq(card.get_property("Cost"), 5,
+		assert_eq(await card.get_property("Cost"), 5,
 				"Spawned card should have modified cost")
-		assert_eq(card.get_property("Tags"), ["Spawn"],
+		assert_eq(await card.get_property("Tags"), ["Spawn"],
 				"Spawned card should have modified tags")

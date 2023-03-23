@@ -6,13 +6,13 @@ class TestManipulationButtons:
 
 	func test_manipulation_buttons_not_messing_hand_focus():
 		var card = cards[0]
-		await move_mouse(card.global_position).completed
-		await move_mouse(card.global_position - Vector2(0,100)).completed
+		await move_mouse(card.global_position)
+		await move_mouse(card.global_position - Vector2(0,100))
 		await yield_for(0.2).YIELD
-		await move_mouse(card.global_position).completed
-		await move_mouse(card.global_position - Vector2(0,100)).completed
+		await move_mouse(card.global_position)
+		await move_mouse(card.global_position - Vector2(0,100))
 		await yield_for(0.2).YIELD
-		await move_mouse(card.global_position).completed
+		await move_mouse(card.global_position)
 		await yield_to(cards[0].get_node('Tween'), "loop_finished", 1).YIELD
 		assert_almost_eq(Vector2(103, -240.5),cards[0].position,Vector2(2,2),
 				"Card focused and in correct global position")

@@ -17,7 +17,7 @@ class TestSignals:
 				"subject": "self",
 				"set_faceup": false}],
 				"trigger": "self"}}
-		await table_move(card, Vector2(100,100)).completed
+		await table_move(card, Vector2(100,100))
 		card.card_rotation = 90
 		await yield_to(card._flip_tween, "loop_finished", 1).YIELD
 		assert_signal_emitted_with_parameters(
@@ -31,7 +31,7 @@ class TestSignals:
 				{"name": "flip_card",
 				"subject": "self",
 				"set_faceup": false}]}}
-		await table_move(target, Vector2(500,100)).completed
+		await table_move(target, Vector2(500,100))
 		target.card_rotation = 90
 		await yield_to(target._flip_tween, "loop_finished", 1).YIELD
 		assert_signal_emitted_with_parameters(
@@ -107,14 +107,14 @@ class TestCardPropertiesFilter:
 				"filter_state_trigger": [{"filter_properties": {"Type": ttype2}}],
 				"trigger": "another"}}
 		await yield_for(0.5).YIELD
-		await table_move(target, Vector2(500,100)).completed
-		await table_move(target2, Vector2(900,100)).completed
+		await table_move(target, Vector2(500,100))
+		await table_move(target2, Vector2(900,100))
 		target.card_rotation = 90
 		await yield_for(0.5).YIELD
 		assert_false(card.targeting_arrow.is_targeting,
 				"Card did not start targeting since filter_properties_trigger"
 				+ "  did not match even though filter_properties_subject matched")
-		await target_card(cards[6],target2).completed
+		await target_card(cards[6],target2)
 		await yield_to(target._flip_tween, "loop_finished", 1).YIELD
 		assert_true(cards[2].is_faceup,
 				"Card stayed face-up since filter_properties_trigger didn't match")
@@ -138,7 +138,7 @@ class TestCardPropertiesFilter:
 		assert_false(cards[6].targeting_arrow.is_targeting,
 				"Card did not start targeting since filter_properties_trigger"
 				+ "  did not match even though filter_properties_subject matched")
-		await target_card(cards[7],target).completed
+		await target_card(cards[7],target)
 		await yield_to(target._flip_tween, "loop_finished", 1).YIELD
 		assert_true(target.is_faceup,
 				"Card stayed face-up since filter_properties_subject didn't match"
@@ -176,7 +176,7 @@ class TestCardRotates:
 					"set_faceup": false}],
 				"filter_degrees": 0,
 				"trigger": "another"}}
-		await table_move(target, Vector2(500,100)).completed
+		await table_move(target, Vector2(500,100))
 		target.card_rotation = 90
 		await yield_to(card._tween, "loop_finished", 1).YIELD
 		assert_signal_emitted_with_parameters(
@@ -232,7 +232,7 @@ class TestCardFlipped:
 		assert_false(card.is_faceup,
 				"Card turned face-down after signal trigger")
 		assert_true(cards[2].is_faceup,
-			 "Card stayed face-up since filter_facup didn't match")
+			"Card stayed face-up since filter_facup didn't match")
 		assert_false(cards[3].is_faceup,
 				"Card turned face-down since filter_facup matches")
 
@@ -248,7 +248,7 @@ class TestCardViewed:
 					"set_faceup": false}],
 				"trigger": "another"}}
 
-		await table_move(target, Vector2(600,100)).completed
+		await table_move(target, Vector2(600,100))
 		target.is_faceup = false
 		await yield_to(target._flip_tween, "loop_finished", 1).YIELD
 		target.is_viewed = true
@@ -582,7 +582,7 @@ class TestCardTargeted:
 					"set_faceup": false}],
 				"trigger": "another"}}
 		cards[4].targeting_arrow.initiate_targeting()
-		await target_card(cards[4], target).completed
+		await target_card(cards[4], target)
 		await yield_for(0.1).YIELD
 
 		assert_signal_emitted_with_parameters(
@@ -610,8 +610,8 @@ class TestCardUnattached:
 					"subject": "self",
 					"set_faceup": false}],
 				"trigger": "another"}}
-		await table_move(host, Vector2(500,100)).completed
-		await table_move(target, Vector2(500,50)).completed
+		await table_move(host, Vector2(500,100))
+		await table_move(target, Vector2(500,50))
 		target.attach_to_host(host)
 		await yield_for(0.1).YIELD
 		assert_signal_emitted_with_parameters(
@@ -718,13 +718,13 @@ class TestSameSignalDiffTargets:
 							"subject": "trigger",
 							"trigger": "another",
 						}]}}
-		await drag_drop(card, Vector2(300,300)).completed
+		await drag_drop(card, Vector2(300,300))
 		await yield_for(0.2).YIELD
 		var void_token: Token = card.tokens.get_token("void")
 		assert_not_null(void_token)
 		if void_token:
 			assert_eq(void_token.count,2,"Token set to specified amount")
-		await drag_drop(target, Vector2(800,300)).completed
+		await drag_drop(target, Vector2(800,300))
 		var industry_token: Token = target.tokens.get_token("industry")
 		assert_not_null(industry_token)
 		if industry_token:

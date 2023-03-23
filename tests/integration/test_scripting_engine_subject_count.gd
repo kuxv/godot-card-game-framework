@@ -5,7 +5,7 @@ class TestBoardseekWithSubjectCount:
 
 	func test_boardseek_with_subject_count():
 		for iter in range(5):
-			await table_move(deck.get_top_card(), Vector2(150*iter,200)).completed
+			await table_move(deck.get_top_card(), Vector2(150*iter,200))
 		target = board.get_card(0)
 		card.scripts = {"manual": {"hand": [
 				{"name": "move_card_to_container",

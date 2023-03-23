@@ -8,7 +8,7 @@ class TestBasics:
 				{"name": "rotate_card",
 				"subject": "self",
 				"degrees": 270}]}}
-		await table_move(card, Vector2(100,200)).completed
+		await table_move(card, Vector2(100,200))
 		card.execute_scripts()
 		assert_eq(target.card_rotation, 0,
 				"Script should not work from a different state")
@@ -64,7 +64,7 @@ class TestStateExecutions:
 				{"name": "flip_card",
 				"subject": "self",
 				"set_faceup": false}]}}
-		await table_move(card, Vector2(500,100)).completed
+		await table_move(card, Vector2(500,100))
 		card.execute_scripts()
 		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
@@ -109,19 +109,19 @@ class TestCardScripts:
 	func test_CardScripts():
 		card = cards[1]
 		target = cards[3]
-		await table_move(target, Vector2(800,200)).completed
-		await table_move(card, Vector2(100,200)).completed
+		await table_move(target, Vector2(800,200))
+		await table_move(card, Vector2(100,200))
 		card.execute_scripts()
-		await target_card(card,target,"slow").completed
+		await target_card(card,target,"slow")
 		await yield_to(target.get_node("Tween"), "loop_finished", 1).YIELD
 		# This also tests the _common_target set
 		assert_false(target.is_faceup,
 				"Test1 script leaves target facedown")
 		assert_eq(target.card_rotation, 180,
 				"Test1 script rotates 180 degrees")
-		await table_move(cards[4], Vector2(500,200)).completed
+		await table_move(cards[4], Vector2(500,200))
 		card.execute_scripts()
-		await target_card(card,cards[4]).completed
+		await target_card(card,cards[4])
 		await yield_to(cards[4].get_node("Tween"), "loop_finished", 1).YIELD
 		assert_false(cards[4].is_faceup,
 				"Ensure targeting is cleared after first ScriptingEngine")
@@ -143,11 +143,11 @@ class TestTargetScriptOnDragFromHand:
 					"subject": "target",
 					"set_faceup": false}]}}
 		card.hand_drag_starts_targeting = true
-		await drag_card(card, Vector2(300,300)).completed
+		await drag_card(card, Vector2(300,300))
 		assert_true(card.targeting_arrow.get_node("ArrowHead").visible,
 				"Targeting has started on long-click")
-		await target_card(card,target).completed
-		assert_eq(board.counters.get_counter("credits"),8,
+		await target_card(card,target)
+		assert_eq(await board.counters.get_counter("credits"),8,
 				"Counter reduced by 2")
 		assert_false(target.is_faceup,
 				"Target is face-down")
@@ -160,11 +160,11 @@ class TestTargetScriptOnDragFromHand:
 					"subject": "target",
 					"set_faceup": false}]}}
 		target = cards[2]
-		await drag_card(card, Vector2(300,300)).completed
+		await drag_card(card, Vector2(300,300))
 		assert_false(card.targeting_arrow.get_node("ArrowHead").visible,
 				"Targeting not started because costs cannot be paid")
-		await target_card(card,target).completed
-		assert_eq(board.counters.get_counter("credits"),8,
+		await target_card(card,target)
+		assert_eq(await board.counters.get_counter("credits"),8,
 				"Counter not reduced")
 		assert_true(target.is_faceup,
 				"Target stayed face-up since cost could not be paid")
@@ -177,11 +177,11 @@ class TestTargetScriptOnDragFromHand:
 					"modification": -10,
 					"is_cost": true,
 					"counter_name": "credits"}]}}
-		await drag_card(card, Vector2(300,300)).completed
+		await drag_card(card, Vector2(300,300))
 		assert_true(card.targeting_arrow.get_node("ArrowHead").visible,
 				"Targeting started because targeting is_cost")
-		await target_card(card,target).completed
-		assert_eq(board.counters.get_counter("credits"),8,
+		await target_card(card,target)
+		assert_eq(await board.counters.get_counter("credits"),8,
 				"Counter not reduced")
 		assert_true(target.is_faceup,
 				"Target stayed face-up since cost could not be paid")
@@ -193,10 +193,10 @@ class TestTargetScriptOnDragFromHand:
 					{"name": "mod_counter",
 					"modification": -3,
 					"counter_name": "credits"}]}}
-		await drag_card(card, Vector2(300,300)).completed
+		await drag_card(card, Vector2(300,300))
 		unclick_card_anywhere(card)
 		await yield_for(0.1).YIELD
-		assert_eq(board.counters.get_counter("credits"),8,
+		assert_eq(await board.counters.get_counter("credits"),8,
 				"Counter not reduced since nothing was targeted")
 		card.scripts = {"manual": {"hand": [
 					{"name": "flip_card",
@@ -206,7 +206,7 @@ class TestTargetScriptOnDragFromHand:
 					"modification": -3,
 					"is_cost": true,
 					"counter_name": "credits"}]}}
-		await drag_card(card, Vector2(300,300)).completed
+		await drag_card(card, Vector2(300,300))
 		unclick_card_anywhere(card)
-		assert_eq(board.counters.get_counter("credits"),5,
+		assert_eq(await board.counters.get_counter("credits"),5,
 				"Counter reduced since targeting was not a cost")

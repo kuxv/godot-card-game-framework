@@ -14,7 +14,7 @@ class TestCustomScript:
 		card = cards[1]
 		target = cards[3]
 		card.execute_scripts()
-		await target_card(card,target).completed
+		await target_card(card,target)
 		await yield_for(0.3).YIELD
 		assert_freed(target, "Test Card 1")
 
@@ -26,7 +26,7 @@ class TestRotateCard:
 				{"name": "rotate_card",
 				"subject": "self",
 				"degrees": 90}]}}
-		await table_move(card, Vector2(100,200)).completed
+		await table_move(card, Vector2(100,200))
 		card.execute_scripts()
 		await yield_to(card._tween, "loop_finished", 1).YIELD
 		assert_eq(card.card_rotation, 90,
@@ -41,7 +41,7 @@ class TestFlipCard:
 					"subject": "target",
 					"set_faceup": false}]}}
 		card.execute_scripts()
-		await target_card(card,target).completed
+		await target_card(card,target)
 		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		assert_false(target.is_faceup,
@@ -51,7 +51,7 @@ class TestFlipCard:
 					"subject": "target",
 					"set_faceup": true}]}}
 		card.execute_scripts()
-		await target_card(card,target).completed
+		await target_card(card,target)
 		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		await yield_to(target._flip_tween, "loop_finished", 0.5).YIELD
 		assert_true(target.is_faceup,
@@ -66,7 +66,7 @@ class TestViewCard:
 					{"name": "view_card",
 					"subject": "target"}]}}
 		card.execute_scripts()
-		await target_card(card,target).completed
+		await target_card(card,target)
 		assert_true(target.is_viewed,
 				"Target should be viewed")
 		target = cfc.NMAP.deck.get_top_card()
@@ -174,7 +174,7 @@ class TestMoveCard:
 				"src_container": "deck",
 				"grid_name":  "BoardPlacementGrid"}]}}
 		board.get_node("BoardPlacementGrid").visible = true
-		await execute_with_yield(card).completed
+		await execute_with_yield(card)
 		assert_not_null(target._placement_slot,
 				"Card should have moved to a grid slot")
 		assert_not_null(target2._placement_slot,
@@ -204,7 +204,7 @@ class TestModToken:
 				"set_to_mod": true,
 				"token_name":  "industry"}]}}
 		card.execute_scripts()
-		await target_card(card,target).completed
+		await target_card(card,target)
 		# My scripts are slower now
 		await yield_for(0.2).YIELD
 		assert_eq(2,industry_token.count,"Token set to specified amount")
@@ -248,12 +248,12 @@ class TestAttachCard:
 	extends "res://tests/ScEng_common.gd"
 
 	func test_attach_to_card():
-		await table_move(target, Vector2(500,400)).completed
+		await table_move(target, Vector2(500,400))
 		card.scripts = {"manual": {"hand": [
 				{"name": "attach_to_card",
 				"subject": "target"}]}}
 		card.execute_scripts()
-		await target_card(card,target).completed
+		await target_card(card,target)
 		await yield_to(card._tween, "loop_finished", 0.5).YIELD
 		await yield_to(card._tween, "loop_finished", 0.5).YIELD
 		assert_eq(card.current_host_card,target,
@@ -263,12 +263,12 @@ class TestHostCard:
 	extends "res://tests/ScEng_common.gd"
 
 	func test_host_card():
-		await table_move(card, Vector2(500,400)).completed
+		await table_move(card, Vector2(500,400))
 		card.scripts = {"manual": {"board": [
 				{"name": "host_card",
 				"subject": "target"}]}}
 		card.execute_scripts()
-		await target_card(card,target).completed
+		await target_card(card,target)
 		await yield_to(card._tween, "loop_finished", 0.5).YIELD
 		await yield_to(card._tween, "loop_finished", 0.5).YIELD
 		assert_eq(target.current_host_card,card,
@@ -283,7 +283,7 @@ class TestCreateGrid:
 				"scene_path": "res://src/custom/CGFPlacementGridDemo.tscn",
 				"object_count": 2,
 				"board_position":  Vector2(50,50)}]}}
-		await execute_with_yield(card).completed
+		await execute_with_yield(card)
 		var grids: Array = get_tree().get_nodes_in_group("placement_grid")
 		assert_eq(grids.size(), 3, "All grids were created")
 		card.scripts = {"manual": {"hand": [
@@ -292,7 +292,7 @@ class TestCreateGrid:
 				"grid_name": "GUT Grid",
 				"object_count": 3,
 				"board_position":  Vector2(600,50)}]}}
-		await execute_with_yield(card).completed
+		await execute_with_yield(card)
 		var gut_grids := []
 		for g in get_tree().get_nodes_in_group("placement_grid"):
 			if not g in grids:
@@ -310,7 +310,7 @@ class TestModCounters:
 				"modification": 5,
 				"counter_name":  "research"}]}}
 		card.execute_scripts()
-		assert_eq(5,board.counters.get_counter("research"),
+		assert_eq(5,await board.counters.get_counter("research"),
 				"Counter increased by specified amount")
 		card.scripts = {"manual": {"hand": [
 				{"name": "mod_counter",
@@ -318,7 +318,7 @@ class TestModCounters:
 				"set_to_mod": true,
 				"counter_name": "credits"}]}}
 		card.execute_scripts()
-		assert_eq(2,board.counters.get_counter("credits"),
+		assert_eq(2,await board.counters.get_counter("credits"),
 				"Counter set to the specified amount")
 
 	func test_draw_more_cards_than_pile_max():

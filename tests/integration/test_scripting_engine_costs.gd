@@ -20,13 +20,13 @@ class TestSelfandRotate:
 				{"name": "flip_card",
 				"subject": "self",
 				"set_faceup": false}]}}
-		await table_move(card, Vector2(100,200)).completed
+		await table_move(card, Vector2(100,200))
 		card.execute_scripts()
 		await yield_to(card._flip_tween, "loop_finished", 0.5).YIELD
 		assert_false(card.is_faceup,
 				"card turn face-down because "
 				+ "rotation cost could be paid")
-		await table_move(cards[1], Vector2(500,200)).completed
+		await table_move(cards[1], Vector2(500,200))
 		cards[1].card_rotation = 90
 		cards[1].execute_scripts()
 		await yield_to(cards[1]._flip_tween, "loop_finished", 0.4).YIELD
@@ -54,15 +54,15 @@ class TestTargetCosts:
 				{"name": "flip_card",
 				"subject": "self",
 				"set_faceup": false}]}}
-		await table_move(target, Vector2(100,200)).completed
+		await table_move(target, Vector2(100,200))
 		card.execute_scripts()
-		await target_card(card,target).completed
+		await target_card(card,target)
 		await yield_to(card._flip_tween, "loop_finished", 0.5).YIELD
 		assert_false(card.is_faceup,
 				"card should turn face-down because "
 				+ "target rotation cost could be paid")
 		cards[1].execute_scripts()
-		await target_card(cards[1],target).completed
+		await target_card(cards[1],target)
 		await yield_to(cards[1]._flip_tween, "loop_finished", 0.5).YIELD
 		assert_true(cards[1].is_faceup,
 				"Target should stay face-up because "
@@ -85,11 +85,11 @@ class TestMultipleCosts:
 				"subject": "self",
 				"is_cost": true,
 				"set_faceup": false}]}}
-		await table_move(target, Vector2(100,200)).completed
+		await table_move(target, Vector2(100,200))
 		target.is_faceup = false
 		await yield_to(card._flip_tween, "loop_finished", 0.5).YIELD
 		card.execute_scripts()
-		await target_card(card,target).completed
+		await target_card(card,target)
 		await yield_to(card._flip_tween, "loop_finished", 0.5).YIELD
 		assert_true(card.is_faceup,
 				"card should stay face-up because "
@@ -109,7 +109,7 @@ class TestFlipCost:
 				{"name": "rotate_card",
 				"subject": "self",
 				"degrees": 90},]}}
-		await table_move(card, Vector2(100,200)).completed
+		await table_move(card, Vector2(100,200))
 		card.is_faceup = false
 		card.execute_scripts()
 		await yield_to(card._tween, "loop_finished", 0.5).YIELD
@@ -129,7 +129,7 @@ class TestTokenCost:
 				{"name": "rotate_card",
 				"subject": "self",
 				"degrees": 90}]}}
-		await table_move(card, Vector2(1000,200)).completed
+		await table_move(card, Vector2(1000,200))
 		card.execute_scripts()
 		await yield_to(card._tween, "loop_finished", 0.5).YIELD
 		assert_eq(90,card.card_rotation,
@@ -345,7 +345,7 @@ class TestCountersCost:
 				{"name": "rotate_card",
 				"subject": "self",
 				"degrees": 90}]}}
-		await table_move(card, Vector2(200,200)).completed
+		await table_move(card, Vector2(200,200))
 		card.execute_scripts()
 		await yield_to(card._tween, "loop_finished", 0.5).YIELD
 		assert_eq(90,card.card_rotation,
@@ -374,5 +374,5 @@ class TestCountersCost:
 		await yield_to(card._tween, "loop_finished", 0.5).YIELD
 		assert_eq(180,card.card_rotation,
 				"Card not rotated because negative counter cost could not be be paid")
-		assert_eq(1,board.counters.get_counter("research"),
+		assert_eq(1,await board.counters.get_counter("research"),
 				"Token count that could not be paid remains the same")
