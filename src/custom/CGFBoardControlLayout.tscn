@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=11 format=3 uid="uid://calonolyfu1cb"]
 
 [ext_resource type="Script" path="res://src/custom/CGFDiscard.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://dpsd1feepseqf" path="res://src/core/Pile.tscn" id="2"]
@@ -8,358 +8,182 @@
 [ext_resource type="PackedScene" uid="uid://61xugm5ok688" path="res://src/custom/CGFCounters.tscn" id="6"]
 [ext_resource type="PackedScene" uid="uid://cy6tsgt4ac0s3" path="res://src/custom/CGFPlacementGridDemo.tscn" id="7"]
 [ext_resource type="PackedScene" uid="uid://bao5jl3ru5mn0" path="res://src/custom/CGFModifiedLabelGrid.tscn" id="8"]
-[ext_resource type="FontFile" uid="uid://cx5dty4i6ve8b" path="res://fonts/comfortaa/Comfortaa-Bold.ttf" id="9"]
 [ext_resource type="PackedScene" uid="uid://7phpvskfijoc" path="res://src/custom/CGFDeckbuilder/CGFDeckBuilder.tscn" id="10"]
 [ext_resource type="Theme" uid="uid://crxytvr6og0pk" path="res://themes/darktheme/darktheme.theme" id="12"]
 
-
-[sub_resource type="FontFile" id=1]
-size = 14
-outline_size = 2
-outline_color = Color( 0, 0, 0, 1 )
-use_filter = true
-font_data = ExtResource( 9 )
-
-[sub_resource type="StyleBoxFlat" id=3]
-bg_color = Color( 0.145098, 0.145098, 0.145098, 1 )
-
-[sub_resource type="StyleBoxFlat" id=2]
-bg_color = Color( 0, 0, 0, 1 )
-corner_radius_top_left = 25
-corner_radius_top_right = 25
-corner_radius_bottom_right = 25
-corner_radius_bottom_left = 25
-
 [node name="Board" type="Control"]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-theme = ExtResource( 12 )
-script = ExtResource( 5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+theme = ExtResource("12")
+script = ExtResource("5")
 
-[node name="Counters" parent="." instance=ExtResource( 6 )]
+[node name="Counters" parent="." instance=ExtResource("6")]
+layout_mode = 0
 offset_top = 205.0
 offset_bottom = 219.0
 
 [node name="FancyMovementToggle" type="CheckButton" parent="."]
+layout_mode = 0
 offset_right = 12.0
 offset_bottom = 20.0
-pressed = true
 text = "Fancy Movement"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="EnableAttach" type="CheckButton" parent="."]
+layout_mode = 0
 offset_left = 194.978
 offset_top = 1.33486
 offset_right = 395.978
 offset_bottom = 41.3349
 text = "Enable Attachment"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="ScalingFocusOptions" type="OptionButton" parent="."]
+layout_mode = 0
 offset_left = -1.33484
 offset_top = 44.0497
 offset_right = 187.665
 offset_bottom = 84.0497
-pressed = true
-text = "Scaling + SubViewport Focus"
-items = [ "Scaling Focus", null, false, 0, null, "SubViewport Focus", null, false, 1, null, "Scaling + SubViewport Focus", null, false, 2, null ]
-selected = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="ReshuffleAllDeck" type="Button" parent="."]
+layout_mode = 0
 offset_left = 9.89948
 offset_top = 116.762
 offset_right = 200.899
 offset_bottom = 136.762
 text = "Reshuffle all cards into deck"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="ReshuffleAllDiscard" type="Button" parent="."]
+layout_mode = 0
 offset_left = 9.89948
 offset_top = 140.334
 offset_right = 200.899
 offset_bottom = 160.334
 text = "Reshuffle all cards into discard"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="OvalHandToggle" type="CheckButton" parent="."]
+layout_mode = 0
 offset_left = 405.31
 offset_top = 1.12245
 offset_right = 594.31
 offset_bottom = 41.1225
-pressed = true
 text = "Oval Hand Shape3D"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="DeckBuilder" type="Button" parent="."]
+layout_mode = 0
 offset_left = 205.0
 offset_top = 45.0
 offset_right = 345.0
 offset_bottom = 85.0
 text = "DeckBuilder"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Debug" type="CheckButton" parent="."]
+layout_mode = 0
 offset_left = 789.192
 offset_top = 3.36737
 offset_right = 978.192
 offset_bottom = 43.3674
-pressed = true
 text = "Debug"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="PlacementGridDemo" parent="." instance=ExtResource( 7 )]
+[node name="PlacementGridDemo" parent="." instance=ExtResource("7")]
+layout_mode = 0
 offset_left = 775.0
 offset_top = 240.0
 offset_right = 1274.0
 offset_bottom = 436.0
-highlight = Color( 0.985156, 0, 1.3, 1.3 )
+highlight = Color(0.985156, 0, 1.3, 1.3)
 
-[node name="ModifiedLabelGrid" parent="." instance=ExtResource( 8 )]
+[node name="ModifiedLabelGrid" parent="." instance=ExtResource("8")]
+layout_mode = 0
 offset_left = 1015.0
 offset_top = 30.0
 offset_right = 1264.0
 offset_bottom = 226.0
 
 [node name="SeedLabel" type="Label" parent="."]
+layout_mode = 0
 offset_left = 10.0
 offset_top = 175.0
 offset_right = 265.0
 offset_bottom = 200.0
-custom_fonts/font = SubResource( 1 )
 text = "Game Seed is: "
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="DeckBuilderPopup" type="PopupPanel" parent="."]
-offset_right = 1000.0
-offset_bottom = 600.0
-custom_minimum_size = Vector2( 800, 0 )
 
-[node name="DeckBuilder" parent="DeckBuilderPopup" instance=ExtResource( 10 )]
-anchor_right = 1.0
-anchor_bottom = 1.0
+[node name="DeckBuilder" parent="DeckBuilderPopup" instance=ExtResource("10")]
 offset_left = 2.0
 offset_top = 2.0
-offset_right = -2.0
-offset_bottom = -2.0
-custom_styles/panel = SubResource( 3 )
+offset_right = 72.0
+offset_bottom = -363.0
 
 [node name="HandArea" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -241.124
 offset_bottom = -1.12354
-custom_minimum_size = Vector2( 0, 120 )
 size_flags_horizontal = 3
-__meta__ = {
-"_edit_group_": true,
-"_edit_use_anchors_": false
-}
 
 [node name="HBC" type="HBoxContainer" parent="HandArea"]
-offset_right = 1280.0
-offset_bottom = 240.0
+layout_mode = 2
 
 [node name="DeckControl" type="MarginContainer" parent="HandArea/HBC"]
-offset_right = 75.0
-offset_bottom = 240.0
-custom_minimum_size = Vector2( 75, 0 )
-custom_constants/offset_right = 15
-custom_constants/offset_left = 15
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HandArea/HBC/DeckControl"]
-offset_left = 15.0
-offset_right = 60.0
-offset_bottom = 240.0
+layout_mode = 2
 
 [node name="Push" type="Control" parent="HandArea/HBC/DeckControl/VBoxContainer"]
-offset_right = 45.0
-offset_bottom = 237.0
+layout_mode = 2
 size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Control" type="Control" parent="HandArea/HBC/DeckControl/VBoxContainer"]
-offset_top = 240.0
-offset_right = 45.0
-offset_bottom = 240.0
+layout_mode = 2
 
-[node name="Deck" parent="HandArea/HBC/DeckControl/VBoxContainer/Control" instance=ExtResource( 2 )]
-scale = Vector2( 0.5, 0.5 )
-script = ExtResource( 4 )
-placement = 9
+[node name="Deck" parent="HandArea/HBC/DeckControl/VBoxContainer/Control" instance=ExtResource("2")]
+scale = Vector2(0.5, 0.5)
+script = ExtResource("4")
 pile_name = "Deck"
+placement = 9
 
-[node name="VBoxContainer" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Control/CenterContainer" index="0"]
-offset_right = 68.0
-offset_bottom = 109.0
-
-[node name="Label" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Control/CenterContainer/VBoxContainer" index="0"]
-offset_right = 68.0
-
-[node name="PanelContainer" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Control/CenterContainer/VBoxContainer" index="1"]
-offset_top = 32.0
-offset_right = 68.0
-offset_bottom = 61.0
-
-[node name="CenterContainer" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Control/CenterContainer/VBoxContainer/PanelContainer" index="0"]
-offset_right = 68.0
-
-[node name="CardCount" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Control/CenterContainer/VBoxContainer/PanelContainer/CenterContainer" index="0"]
-offset_right = 45.0
-
-[node name="View" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Control/ManipulationButtons" index="0"]
-offset_right = 26.0
-offset_bottom = 27.0
-
-[node name="ViewSorted" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Control/ManipulationButtons" index="1"]
-offset_top = 30.0
-offset_right = 26.0
-offset_bottom = 57.0
-
-[node name="Shuffle" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Control/ManipulationButtons" index="2"]
-offset_top = 60.0
-offset_right = 26.0
-offset_bottom = 87.0
-
-[node name="CardView" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/ViewPopup" index="0"]
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 6.0
-offset_bottom = 6.0
-
-[node name="Position" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Debug" index="0"]
-offset_bottom = 23.0
-
-[node name="AreaPos" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Debug" index="1"]
-offset_top = 26.0
-offset_bottom = 49.0
-
-[node name="Size" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Debug" index="2"]
-offset_top = 52.0
-offset_bottom = 75.0
+[node name="Highlight" parent="HandArea/HBC/DeckControl/VBoxContainer/Control/Deck/Control" index="0"]
+anchors_preset = 0
 
 [node name="HandControl" type="Control" parent="HandArea/HBC"]
-offset_left = 78.0
-offset_right = 1202.0
-offset_bottom = 240.0
+layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Hand" parent="HandArea/HBC/HandControl" instance=ExtResource( 3 )]
-placement = 9
+[node name="Hand" parent="HandArea/HBC/HandControl" instance=ExtResource("3")]
 excess_cards = 0
+placement = 9
 
 [node name="DiscardControl" type="MarginContainer" parent="HandArea/HBC"]
-offset_left = 1205.0
-offset_right = 1280.0
-offset_bottom = 240.0
-custom_minimum_size = Vector2( 75, 0 )
-custom_constants/offset_right = 15
-custom_constants/offset_left = 15
+custom_minimum_size = Vector2(75, 0)
+layout_mode = 2
 
 [node name="VBC" type="VBoxContainer" parent="HandArea/HBC/DiscardControl"]
-offset_left = 15.0
-offset_right = 60.0
-offset_bottom = 240.0
+layout_mode = 2
 
 [node name="Push" type="Control" parent="HandArea/HBC/DiscardControl/VBC"]
-offset_right = 45.0
-offset_bottom = 237.0
+layout_mode = 2
 size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Control" type="Control" parent="HandArea/HBC/DiscardControl/VBC"]
-offset_top = 240.0
-offset_right = 45.0
-offset_bottom = 240.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+layout_mode = 2
 
-[node name="Discard" parent="HandArea/HBC/DiscardControl/VBC/Control" instance=ExtResource( 2 )]
-scale = Vector2( 0.5, 0.5 )
-script = ExtResource( 1 )
-placement = 9
+[node name="Discard" parent="HandArea/HBC/DiscardControl/VBC/Control" instance=ExtResource("2")]
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1")
 pile_name = "Discard"
 faceup_cards = true
+placement = 9
 
-[node name="Control" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard" index="0"]
-custom_styles/panel = SubResource( 2 )
-
-[node name="VBoxContainer" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Control/CenterContainer" index="0"]
-offset_right = 68.0
-offset_bottom = 109.0
-
-[node name="Label" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Control/CenterContainer/VBoxContainer" index="0"]
-offset_right = 68.0
-
-[node name="PanelContainer" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Control/CenterContainer/VBoxContainer" index="1"]
-offset_top = 32.0
-offset_right = 68.0
-offset_bottom = 61.0
-
-[node name="CenterContainer" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Control/CenterContainer/VBoxContainer/PanelContainer" index="0"]
-offset_right = 68.0
-
-[node name="CardCount" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Control/CenterContainer/VBoxContainer/PanelContainer/CenterContainer" index="0"]
-offset_right = 45.0
-
-[node name="View" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Control/ManipulationButtons" index="0"]
-offset_right = 26.0
-offset_bottom = 27.0
-
-[node name="ViewSorted" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Control/ManipulationButtons" index="1"]
-offset_top = 30.0
-offset_right = 26.0
-offset_bottom = 57.0
-
-[node name="Shuffle" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Control/ManipulationButtons" index="2"]
-offset_top = 60.0
-offset_right = 26.0
-offset_bottom = 87.0
-
-[node name="CardView" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/ViewPopup" index="0"]
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 6.0
-offset_bottom = 6.0
-
-[node name="Position" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Debug" index="0"]
-offset_bottom = 23.0
-
-[node name="AreaPos" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Debug" index="1"]
-offset_top = 26.0
-offset_bottom = 49.0
-
-[node name="Size" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Debug" index="2"]
-offset_top = 52.0
-offset_bottom = 75.0
+[node name="Highlight" parent="HandArea/HBC/DiscardControl/VBC/Control/Discard/Control" index="0"]
+anchors_preset = 0
 
 [connection signal="toggled" from="FancyMovementToggle" to="." method="_on_FancyMovementToggle_toggled"]
 [connection signal="toggled" from="EnableAttach" to="." method="_on_EnableAttach_toggled"]
