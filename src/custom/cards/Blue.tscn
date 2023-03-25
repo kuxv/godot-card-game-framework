@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bsoos71x1y0pp"]
 
-[ext_resource type="PackedScene" path="res://src/custom/CGFCardTemplate.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://cjmb51f4u0djb" path="res://src/custom/CGFCardTemplate.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://kkw5tef7mw83" path="res://src/custom/CGFCardBack.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://src/custom/cards/BlueFront.tscn" id="3"]
 

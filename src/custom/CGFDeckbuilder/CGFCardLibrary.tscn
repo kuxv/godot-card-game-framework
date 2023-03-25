@@ -2,8 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://co57bmanwiio4" path="res://src/core/CardViewer/CardLibrary/CardLibrary.tscn" id="1"]
 [ext_resource type="Script" path="res://src/custom/CGFDeckbuilder/CGFCardLibrary.gd" id="2"]
-[ext_resource type="PackedScene" path="res://src/custom/CGFInfoPanel.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://src/custom/CGFDeckbuilder/CGFListCardObject.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://c3a76yyj88toc" path="res://src/custom/CGFInfoPanel.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://bn23bkfhq63q3" path="res://src/custom/CGFDeckbuilder/CGFListCardObject.tscn" id="4"]
 
 [node name="CardLibrary" instance=ExtResource("1")]
 script = ExtResource("2")

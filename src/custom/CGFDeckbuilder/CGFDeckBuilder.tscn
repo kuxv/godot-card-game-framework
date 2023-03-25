@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://7phpvskfijoc"]
 
 [ext_resource type="PackedScene" uid="uid://ckckpmse6xiqr" path="res://src/core/CardViewer/DeckBuilder/DeckBuilder.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://src/custom/CGFInfoPanel.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://c3a76yyj88toc" path="res://src/custom/CGFInfoPanel.tscn" id="2"]
 [ext_resource type="Script" path="res://src/custom/CGFDeckbuilder/CGFDeckBuilder.gd" id="4"]
 
 [node name="DeckBuilder" instance=ExtResource("1")]

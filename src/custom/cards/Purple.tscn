@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cs4qyiv170mws"]
 
-[ext_resource type="PackedScene" path="res://src/custom/cards/PurpleFront.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://src/custom/CGFCardTemplate.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://dghmvts0sq3wm" path="res://src/custom/cards/PurpleFront.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://cjmb51f4u0djb" path="res://src/custom/CGFCardTemplate.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://cj142k0ximswi" path="res://src/custom/PlayingCardBack.tscn" id="3"]
 
 [node name="Card" instance=ExtResource("2")]

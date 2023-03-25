@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dj2nrvw0w3qf8"]
 
-[ext_resource type="PackedScene" path="res://src/custom/CGFCardFront.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://cont608btcl2l" path="res://src/custom/CGFCardFront.tscn" id="1"]
 
 [node name="Front" instance=ExtResource("1")]
 anchors_preset = 15
