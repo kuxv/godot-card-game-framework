@@ -1,34 +1,15 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://cqfefhjix4f81"]
 
-[ext_resource path="res://src/core/CardViewer/DeckBuilder/CategoryContainer.gd" type="Script" id=1]
-[ext_resource path="res://fonts/comfortaa/Comfortaa-Bold.ttf" type="FontFile" id=2]
-
-[sub_resource type="FontFile" id=1]
-size = 15
-use_filter = true
-font_data = ExtResource( 2 )
+[ext_resource type="Script" path="res://src/core/CardViewer/DeckBuilder/CategoryContainer.gd" id="1"]
 
 [node name="CategoryContainer" type="VBoxContainer"]
 offset_right = 633.0
 offset_bottom = 46.0
-script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("1")
 
 [node name="CategoryLabel" type="Label" parent="."]
-offset_right = 633.0
-offset_bottom = 18.0
-custom_fonts/font = SubResource( 1 )
+layout_mode = 2
 text = "Blue (1)"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="CategoryCards" type="VBoxContainer" parent="."]
-offset_top = 22.0
-offset_right = 633.0
-offset_bottom = 22.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+layout_mode = 2
