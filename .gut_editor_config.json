@@ -15,7 +15,7 @@
  "hide_orphans": false,
  "ignore_pause": true,
  "include_subdirs": false,
- "inner_class": "",
+ "inner_class": null,
  "junit_xml_file": "",
  "junit_xml_timestamp": false,
  "log_level": 3,
@@ -32,12 +32,12 @@
  "post_run_script": "",
  "pre_run_script": "",
  "prefix": "test_",
- "selected": "",
+ "selected": "test_AskInteger_scene.gd",
  "should_exit": false,
  "should_exit_on_success": false,
  "should_maximize": true,
  "show_help": false,
  "suffix": ".gd",
  "tests": [],
- "unit_test_name": ""
+ "unit_test_name": null
 }
