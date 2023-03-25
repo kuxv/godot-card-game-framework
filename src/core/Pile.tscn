@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dpsd1feepseqf"]
 
 [ext_resource type="Script" path="res://src/core/Pile.gd" id="2"]
-[ext_resource type="PackedScene" uid="uid://dhbit2g2utf6v" path="res://src/core/Highlight.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://ct7hk34s7cjll" path="res://src/core/Highlight.tscn" id="3"]
 
 [sub_resource type="RectangleShape2D" id="4"]
 size = Vector2(78, 123)
@@ -15,6 +15,12 @@ mouse_filter = 1
 
 [node name="Highlight" parent="Control" instance=ExtResource("3")]
 layout_mode = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
 
 [node name="CenterContainer" type="CenterContainer" parent="Control"]
 layout_mode = 0
