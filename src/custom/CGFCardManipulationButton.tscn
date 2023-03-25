@@ -1,16 +1,7 @@
-[gd_scene load_steps=3 format=2]
-
-[ext_resource path="res://fonts/Xolonium-Regular.ttf" type="FontFile" id=1]
-
-[sub_resource type="FontFile" id=1]
-font_data = ExtResource( 1 )
+[gd_scene format=3 uid="uid://q1vfdnugcf1i"]
 
 [node name="ManipulationButton" type="Button"]
 offset_right = 29.0
 offset_bottom = 26.0
 mouse_filter = 1
-custom_fonts/font = SubResource( 1 )
 text = "T"
-__meta__ = {
-"_edit_use_anchors_": false
-}

@@ -14,12 +14,6 @@ grow_vertical = 0
 
 [node name="Highlight" parent="Control" index="0"]
 anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 
 [node name="DiscardRandom" type="Button" parent="Control/ManipulationButtons" index="1" groups=["manipulation_button"]]
 layout_mode = 2
