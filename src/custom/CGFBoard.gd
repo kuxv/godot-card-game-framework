@@ -37,6 +37,8 @@ func _on_FancyMovementToggle_toggled(_button_pressed) -> void:
 
 func _on_OvalHandToggle_toggled(_button_pressed: bool) -> void:
 	cfc.set_setting("hand_use_oval_shape", $OvalHandToggle.button_pressed)
+	for c in cfc.NMAP.hand.get_all_cards():
+		c.reorganize_self()
 
 
 # Reshuffles all Card objects created back into the deck
