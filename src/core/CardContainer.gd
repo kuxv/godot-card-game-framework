@@ -51,7 +51,7 @@ var accumulated_shift := Vector2(0,0)
 # ManipulationButtons node
 @onready var manipulation_buttons := $Control/ManipulationButtons
 # ManipulationButtons tween node
-@onready var manipulation_buttons_tween := $Control/ManipulationButtons/Tween
+var manipulation_buttons_tween : Tween
 # Control node
 @onready var control := $Control
 # Shuffle button
@@ -82,6 +82,8 @@ func _ready() -> void:
 	_init_ui()
 	_init_signal()
 	manipulation_buttons.visible = show_manipulation_buttons
+	manipulation_buttons_tween = $Control/ManipulationButtons.create_tween()
+	manipulation_buttons_tween.kill()
 
 
 func _init_control_size() -> void:
@@ -129,7 +131,7 @@ func _on_Control_mouse_entered() -> void:
 # Ensures that buttons are not trying to disappear via previous animation
 func _on_button_mouse_entered() -> void:
 	# We stop ongoing animations to avoid conflicts.
-	manipulation_buttons_tween.remove_all()
+	manipulation_buttons_tween.kill()
 	for button in get_all_manipulation_buttons():
 		button.modulate[3] = 1
 
@@ -150,30 +152,26 @@ func _on_viewport_resized() -> void:
 func are_cards_still_animating() -> bool:
 	for c in get_all_cards():
 		var tt : Tween = c._tween
-		if tt.is_active():
+		if tt.is_running():
 			return(true)
 	return(false)
 
 # Hides manipulation buttons
 func hide_buttons() -> void:
 	# We stop existing tweens to avoid deadlocks
-	manipulation_buttons_tween.remove_all()
+	manipulation_buttons_tween.kill()
+	manipulation_buttons_tween = $Control/ManipulationButtons.create_tween()
+	manipulation_buttons_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	for button in get_all_manipulation_buttons():
-		manipulation_buttons_tween.interpolate_property(button, 'modulate:a',
-				button.modulate.a, 0, 0.25,
-				Tween.TRANS_SINE, Tween.EASE_IN)
-	manipulation_buttons_tween.start()
-
+		manipulation_buttons_tween.tween_property(button, 'modulate:a', 0, 0.25)
 
 # Shows manipulation buttons
 func show_buttons() -> void:
-	manipulation_buttons_tween.remove_all()
+	manipulation_buttons_tween.kill()
+	manipulation_buttons_tween = $Control/ManipulationButtons.create_tween()
+	manipulation_buttons_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	for button in get_all_manipulation_buttons():
-		manipulation_buttons_tween.interpolate_property(button, 'modulate:a',
-				button.modulate.a, 1, 0.25,
-				Tween.TRANS_SINE, Tween.EASE_IN)
-	manipulation_buttons_tween.start()
-
+		manipulation_buttons_tween.tween_property(button, 'modulate:a', 1, 0.25)
 
 # Getter for all_manipulation_buttons
 #
