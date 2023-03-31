@@ -191,7 +191,7 @@ func _on_all_nodes_mapped() -> void:
 # of the framework, all CardContainers will wait in their ready() process
 # for NMAP to be completed.
 func map_node(node) -> void:
-#	print_debug("Map Node %s Start: %sms" % [node.name, str(Time.get_ticks_msec() - load_start_time)])
+	print_debug("Map Node %s Start: %sms" % [node.name, str(Time.get_ticks_msec() - load_start_time)])
 	# The nmap always stores lowercase keys. Each key is a node name
 	var node_name: String = node.name.to_lower()
 	# I don't know why but suring UT sometimes I get duplicate board nodes.
@@ -218,7 +218,7 @@ func map_node(node) -> void:
 		# Once all nodes have been mapped, we emit a signal so that
 		# all nodes waiting to complete their ready()  method, can continue.
 		emit_signal("all_nodes_mapped")
-#	print_debug("Map Node %s End: %sms" % [node.name, str(Time.get_ticks_msec() - load_start_time)])
+	print_debug("Map Node %s End: %sms" % [node.name, str(Time.get_ticks_msec() - load_start_time)])
 
 
 # Setter for the ranom seed.
