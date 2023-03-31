@@ -17,11 +17,11 @@ var is_else := false
 var needs_subject := false
 
 # prepares the script_definition needed by the task to function.
-func _init(owner,
+func _init(in_owner,
 		script: Dictionary,
 		_trigger_object,
 		_trigger_details) -> void:
-	super(owner, script, _trigger_object)
+	super(in_owner, script, _trigger_object)
 	# The function name to be called gets its own var
 	script_name = get_property("name")
 	trigger_details = _trigger_details
@@ -31,7 +31,7 @@ func _init(owner,
 	if not SP.filter_trigger(
 			script,
 			trigger_object,
-			owner,
+			in_owner,
 			trigger_details):
 		is_skipped = true
 

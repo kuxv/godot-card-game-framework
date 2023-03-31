@@ -129,15 +129,15 @@ static func confirm(
 	# We do not use SP.KEY_IS_OPTIONAL here to avoid causing cyclical
 	# references when calling CFUtils from SP
 	if script.get("is_optional_" + type):
-		var confirm = _OPTIONAL_CONFIRM_SCENE.instantiate()
-		confirm.prep(card_name,task_name)
+		var confirm_scene = _OPTIONAL_CONFIRM_SCENE.instantiate()
+		confirm_scene.prep(card_name,task_name)
 		# We have to wait until the player has finished selecting an option
-		await confirm.selected
+		await confirm_scene.selected
 		# If the player selected "No", we don't execute anything
-		if not confirm.is_accepted:
+		if not confirm_scene.is_accepted:
 			is_accepted = false
 		# Garbage cleanup
-		confirm.queue_free()
+		confirm_scene.queue_free()
 	return(is_accepted)
 
 
@@ -302,8 +302,8 @@ static func convert_texture_to_image(texture, is_lossless = false) -> ImageTextu
 		tex = load(texture)
 	else:
 #		print_debug(texture)
-		tex = texture	
-	var image = tex.get_data()
+		tex = texture
+	var image = tex.get_image()
 	var new_texture = ImageTexture.new();
 	return new_texture.create_from_image(image)
 #	if is_lossless:

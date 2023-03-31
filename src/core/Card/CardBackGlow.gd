@@ -13,11 +13,6 @@ var _pulse_values := [Color(1.05,1.05,1.05),Color(0.9,0.9,0.9)]
 var _tween : Tween;
 
 
-func _ready() -> void:
-	# warning-ignore:return_value_discarded
-	_tween.connect("loop_finished",Callable(self,"_on_Pulse_completed"))
-
-
 # Reverses the card back pulse and starts it again
 func _on_Pulse_completed() -> void:
 	# We only pulse the card if it's face-down and on the board
@@ -31,13 +26,16 @@ func _on_Pulse_completed() -> void:
 # Initiates the looping card back pulse
 # The pulse increases and decreases the brightness of the glow
 func start_card_back_animation():
+	if _tween: _tween.kill()
 	_tween = create_tween()
+	_tween.loop_finished.connect(self._on_Pulse_completed)
+#	_tween.connect("loop_finished",Callable(self,"_on_Pulse_completed"))
 	_tween.tween_property(self, 'modulate', _pulse_values[1], 2) \
-	.from(_pulse_values[0]) \
-	.set_trans(Tween.TRANS_LINEAR) \
-	.set_ease(Tween.EASE_IN_OUT)
+		.from(_pulse_values[0]) \
+		.set_trans(Tween.TRANS_LINEAR) \
+		.set_ease(Tween.EASE_IN_OUT)
 
 # Disables the looping card back pulse
 func stop_card_back_animation():
-	_tween.kill()
+	if _tween: _tween.kill()
 	modulate = Color(1,1,1)

@@ -2,6 +2,7 @@ extends Card
 
 
 func _ready() -> void:
+	super()
 	pass
 
 # Sample code on how to ensure costs are paid when a card

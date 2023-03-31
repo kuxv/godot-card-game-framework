@@ -47,9 +47,9 @@ var font_thread: Thread
 
 # Set a label node's text.
 # As the string becomes longer, the font size becomes smaller
-func set_label_text(node: Label, value, scale: float = 1):
+func set_label_text(node: Label, value, in_scale: float = 1):
 #	while font_thread and font_thread.is_active():
-#		await get_tree().idle_frame
+#		await get_tree().process_frame
 #	font_thread = Thread.new()
 ## warning-ignore:return_value_discarded
 #	font_thread.start(Callable(self,"_set_label_text").bind([node,value]),Thread.PRIORITY_LOW)
@@ -59,13 +59,13 @@ func set_label_text(node: Label, value, scale: float = 1):
 	value = _check_for_replacements(node, value)
 	var label_font :Font = get_card_label_font(node)
 #	print_debug(scaled_fonts.get(node.name, 1))
-	var cached_font_size = get_cached_font_size(node,value,scale)
+	var cached_font_size = get_cached_font_size(node,value,in_scale)
 	if cached_font_size:
 		label_font.size = cached_font_size
 	else:
 		# We add a yield here to allow the calling function to continue
 		# and thus avoid the game waiting for the label to resize
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		var working_value: String
 		# If the label node has been set to uppercase the text
 		# Then we need to work off-of uppercased text value
@@ -85,7 +85,7 @@ func set_label_text(node: Label, value, scale: float = 1):
 	#	if  node.name == "Abilities": font_adjustment = -17
 		# We always start shrinking the size, starting from the original size.
 #		print_debug(scaled_fonts.get(node.name, 1))
-		_cache_font_size(node,value,starting_font_size + font_adjustment,scale)
+		_cache_font_size(node,value,starting_font_size + font_adjustment,in_scale)
 		label_font.size = starting_font_size + font_adjustment
 	set_card_label_font(node, label_font)
 	node.text = value
@@ -98,10 +98,10 @@ func set_label_text(node: Label, value, scale: float = 1):
 # by classes extending this, to allow them to use their own methods
 # (e.g. based on themes)
 func get_card_label_font(label: Label) -> Font:
-	var theme : Theme = self.theme
+	var my_theme : Theme = self.theme
 	var label_font : Font
-	if theme:
-		label_font = theme.get_font("font", "Label").duplicate()
+	if my_theme:
+		label_font = my_theme.get_font("font", "Label").duplicate()
 	else:
 		label_font = label.get("custom_fonts/font").duplicate()
 	return(label_font)
@@ -131,7 +131,7 @@ func scale_to(scale_multiplier: float) -> void:
 		if scaled_fonts.get(l) != scale_multiplier:
 			scaled_fonts[l] = scale_multiplier
 			while card_labels[l] in resizing_labels:
-				await get_tree().idle_frame
+				await get_tree().process_frame
 			if card_labels[l] as RichTextLabel:
 				var label : RichTextLabel = card_labels[l]
 				call_deferred("set_rich_label_text",label, label.text, true, scale_multiplier)
@@ -143,7 +143,7 @@ func scale_to(scale_multiplier: float) -> void:
 
 # Set a label node's bbcode text.
 # As the string becomes longer, the font size becomes smaller
-func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false, scale : float = 1):
+func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false, in_scale : float = 1):
 	# We need to avoid other functions to trying to resize this label
 	# while it's already resizing, as due to all the yields
 	# it causes a mess
@@ -170,7 +170,7 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 	# We always start shrinking the size, starting from the original size.
 	_capture_original_font_size(node)
 	_capture_rt_font_size_variations(node)
-	var cached_font_size = get_cached_font_size(node,value,scale)
+	var cached_font_size = get_cached_font_size(node,value,in_scale)
 	if cached_font_size:
 		_set_card_rtl_fonts(node, label_fonts, cached_font_size)
 		_assign_bbcode_text(node, value, cached_font_size)
@@ -184,14 +184,14 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 		# Rich Text has no way to grab its total size without setting the bbcode first
 		# After we set the bbcode, we need to wait for the next frame for the label to adjust
 		# and then we can grab its height
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		var _retries := 0
 		var bbcode_height = node.get_content_height()
 #		print_debug([bbcode_height, label_size.y])
 		while bbcode_height == 0 or bbcode_height > 1000:
 			_retries += 1
 #			print_debug("{0} BBcode height:{1} retrying: {2}".format([card_owner.canonical_name, bbcode_height, _retries]))
-			await get_tree().idle_frame
+			await get_tree().process_frame
 			bbcode_height = node.get_content_height()
 #			print_debug(["Retry", _retries, "Code Height", bbcode_height])
 			if _retries >= 10:
@@ -205,7 +205,7 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 		if bbcode_height > label_size.y:
 			font_adjustment = _adjust_font_size(label_fonts["normal_font"], node.text, label_size)
 			_set_card_rtl_fonts(node, label_fonts, starting_font_size + font_adjustment)
-			await get_tree().idle_frame
+			await get_tree().process_frame
 			bbcode_height = node.get_content_height()
 #			print_debug(["Font Adjustment", font_adjustment, "Code Height", bbcode_height])
 	#		print_debug(bbcode_height, ':', font_adjustment, ':', label_size.y)
@@ -222,14 +222,14 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 			font_adjustment -= 1
 			_set_card_rtl_fonts(node, label_fonts, starting_font_size + font_adjustment)
 			_assign_bbcode_text(node, value, starting_font_size + font_adjustment)
-			await get_tree().idle_frame
+			await get_tree().process_frame
 			bbcode_height = node.get_content_height()
 #			print_debug(["Font Adjustment", font_adjustment, "Code Height", bbcode_height])
 			_retries = 0
 			while bbcode_height == 0 or bbcode_height > 1000:
 				_retries += 1
 #				print_debug("BBcode height:" + str(bbcode_height) + " retrying: " + str(_retries))
-				await get_tree().idle_frame
+				await get_tree().process_frame
 				bbcode_height = node.get_content_height()
 				if _retries >= 10:
 					break
@@ -241,7 +241,7 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 	#		while bbcode_height == 0 or bbcode_height > 1000:
 	#			_set_card_rtl_fonts(node, label_fonts, starting_font_size + font_adjustment)
 	#			_assign_bbcode_text(node, value, starting_font_size + font_adjustment)
-	#			await get_tree().idle_frame
+	#			await get_tree().process_frame
 	#			bbcode_height = node.get_content_height()
 			if starting_font_size + font_adjustment == 6:
 				if small_size_retries <= 2:
@@ -251,18 +251,18 @@ func set_rich_label_text(node: RichTextLabel, value: String, is_resize := false,
 					font_adjustment = _adjust_font_size(label_fonts["normal_font"], node.text, label_size)
 				else:
 					break
-		_cache_font_size(node,value,starting_font_size + font_adjustment, scale)
+		_cache_font_size(node,value,starting_font_size + font_adjustment, in_scale)
 	modulate.a = 1
 	resizing_labels.erase(node)
 
 
-func _cache_font_size(label: Control, text: String, font_size: int, scale : float) -> void:
+func _cache_font_size(label: Control, text: String, font_size: int, in_scale : float) -> void:
 	var text_md5 =  text.md5_text()
 	# We will store each label's font size in a key based on the card scale
 	# The default scale being 1
 	# It has to be a string because the Godot Json print converts ints to
 	# Strings when saving to file
-	var card_size = str(scale)
+	var card_size = str(in_scale)
 	if not cfc.font_size_cache.has(card_size):
 		cfc.font_size_cache[card_size] = {}
 	if not cfc.font_size_cache[card_size].has(label.name):
@@ -271,9 +271,9 @@ func _cache_font_size(label: Control, text: String, font_size: int, scale : floa
 	cfc.set_font_cache()
 
 
-func get_cached_font_size(label: Control, text: String, scale : float):
+func get_cached_font_size(label: Control, text: String, in_scale : float):
 	var text_md5 =  text.md5_text()
-	var card_size = str(scale)
+	var card_size = str(in_scale)
 	var cached_font_size = cfc.font_size_cache.get(card_size, {}).get(label.name, {}).get(text_md5)
 	return(cached_font_size)
 
@@ -295,10 +295,7 @@ func _assign_bbcode_text(rtlabel: RichTextLabel, text : String, font_size: int) 
 		format[key] = format[key].format(bbcode_format)
 	if rtlabel == card_labels["Name"]:
 		_add_title_bbcode(rtlabel)
-	rtlabel.append_text("[center]")
-	# warning-ignore:return_value_discarded
-	rtlabel.append_bbcode(text.format(format))
-	rtlabel.append_text("[/center]")
+	rtlabel.append_text("[center]" + text.format(format) + "[/center]")
 	#	print_debug(text.format(format))
 	rtlabel.pop()
 	if rtlabel == card_labels["Name"]:
@@ -320,7 +317,7 @@ func _get_bbcode_format() -> Dictionary:
 
 # Goes through a rich text label, and retrieves all fonts used to define it.
 func _get_card_rtl_fonts(label: RichTextLabel) -> Dictionary:
-	var theme : Theme = self.theme
+	var my_theme : Theme = self.theme
 	var all_rt_fonts:= {}
 	var label_font : Font
 	for font_type in [
@@ -330,8 +327,8 @@ func _get_card_rtl_fonts(label: RichTextLabel) -> Dictionary:
 			"bold_italics_font",
 			"title_font",
 			"mono_font"]:
-		if theme:
-			label_font = theme.get_font(font_type, "RichTextLabel").duplicate()
+		if my_theme:
+			label_font = my_theme.get_font(font_type, "RichTextLabel").duplicate()
 			if label_font:
 				all_rt_fonts[font_type] = label_font
 		else:
@@ -356,7 +353,9 @@ func _capture_rt_font_size_variations(label: RichTextLabel) -> void:
 			"bold_italics_font",
 			"title_font",
 			"mono_font"]:
-		fvars[font_type] = label_fonts[font_type].size - label_fonts["normal_font"].size
+		var ft_size = get_theme_font_size(label_fonts[font_type].get_font_name())
+		var n_size = get_theme_font_size("normal_font")
+		fvars[font_type] = ft_size - n_size
 	rich_text_font_size_variations[label] = fvars
 
 
@@ -364,8 +363,9 @@ func _capture_rt_font_size_variations(label: RichTextLabel) -> void:
 # adjusted in relation to the normal font.
 func _set_card_rtl_fonts(label: RichTextLabel, fonts_dict: Dictionary, new_size: int) -> void:
 	for font_type in fonts_dict:
-		fonts_dict[font_type].size = new_size + rich_text_font_size_variations[label][font_type]
+#		fonts_dict[font_type].size = new_size + rich_text_font_size_variations[label][font_type]
 		label.add_theme_font_override(font_type, fonts_dict[font_type])
+		label.add_theme_font_size_override(font_type, new_size)
 
 
 # figures out how much a font size has to be reduced, in order to fit

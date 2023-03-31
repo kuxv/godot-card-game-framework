@@ -14,11 +14,11 @@ var is_accepted := true
 # checks the ongoing task and its owner_card against defined filters.
 func _init(
 		alteration_script: Dictionary,
-		trigger_object: Card,
+		in_trigger_object: Card,
 		alterant_object,
 		task_details: Dictionary,
 		prev_subject = null) -> void:
-	super(alterant_object, alteration_script, trigger_object)
+	super(alterant_object, alteration_script, in_trigger_object)
 	# The alteration name gets its own var
 	script_name = get_property("filter_task")
 	trigger_details = task_details
@@ -27,7 +27,7 @@ func _init(
 		prev_subjects = [prev_subject]
 	if not SP.filter_trigger(
 			alteration_script,
-			trigger_object,
+			in_trigger_object,
 			owner,
 			trigger_details):
 		is_valid = false

@@ -166,7 +166,7 @@ func execute(_run_type := CFInt.RunType.NORMAL) -> void:
 						"requesting_object": script.owner,
 						"modifier": _retrieve_temp_modifiers(script, "properties")
 					}
-				var retcode = await call(script.script_name, script)
+				var retcode = call(script.script_name, script)
 				# We set the previous subjects only after the execution, because some tasks
 				# might change the previous subjects for the future tasks
 				if not script.get_property(SP.KEY_PROTECT_PREVIOUS):

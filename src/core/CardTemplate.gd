@@ -205,7 +205,10 @@ signal scripts_executed(card, sceng, trigger)
 var m_canonical_name : String
 var canonical_name : String : get = get_card_name, set = set_card_name_setter
 # Ensures all nodes fit inside this rect.
-var card_size := canonical_size : set = set_card_size_setter
+var m_card_size : Vector2
+var card_size := canonical_size: 
+	get: return m_card_size 
+	set(value): set_card_size_setter(value)
 # Starting state for each card
 var state : int = CardState.PREVIEW : set = set_state
 var state_finalized := false
@@ -365,7 +368,7 @@ func _init_card_name() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta) -> void:
-	if _tween.is_running() and not cfc.ut: # Debug code for catch potential Tween deadlocks
+	if _tween and _tween.is_running() and not cfc.ut: # Debug code for catch potential Tween deadlocks
 		_tween_stuck_time += delta
 		if _tween_stuck_time > 5 and int(fmod(_tween_stuck_time,3)) == 2 :
 			print_debug("Tween Stuck for ",_tween_stuck_time,
@@ -837,7 +840,7 @@ func set_card_size_setter(value: Vector2) -> void:
 	set_card_size(value)
 
 func set_card_size(value: Vector2, ignore_area = false) -> void:
-	card_size = value
+	m_card_size = value
 	_control.custom_minimum_size = value
 	# We set the card to always pivot from its center.
 	_control.pivot_offset = value/2
@@ -988,7 +991,7 @@ func set_card_name(value : String, set_label := true) -> void:
 	else:
 		# We set all areas of the card to match the canonical name.
 		var name_label = card_front.card_labels["Name"]
-		if set_label and name_label as RichTextLabel:
+		if set_label and name_label is RichTextLabel:
 			card_front.set_rich_label_text(name_label,value)
 		elif set_label:
 			card_front.set_label_text(name_label,value)
@@ -1062,7 +1065,7 @@ func set_card_rotation(
 				and not get_parent().is_in_group("hands") \
 				and cfc.game_settings.hand_use_oval_shape \
 				and $Control.rotation != 0.0 \
-				and not _tween.is_running():
+				and (not _tween or not _tween.is_running()):
 			_add_tween_rotation($Control.rotation,value)
 			_tween.stop()
 			if start_tween:
@@ -1504,7 +1507,7 @@ func execute_scripts(
 			if not sceng.all_tasks_completed:
 				await sceng.tasks_completed
 			# warning-ignore:void_assignment
-			await common_post_execution_scripts(trigger)
+			common_post_execution_scripts(trigger)
 			# above await: We make sure this function does to return until all
 			# custom post execution scripts have also finished
 		# This will only trigger when costs could not be paid, and will
@@ -2178,10 +2181,10 @@ func _add_tween_rotation(
 		runtime := 0.3,
 		trans_type = Tween.TRANS_BACK,
 		ease_type = Tween.EASE_IN_OUT):
-	$Tween.remove($Control,'rotation')
-	$Tween.interpolate_property($Control,'rotation',
-			expected_rotation, target_rotation, runtime,
-			trans_type, ease_type)
+	_tween.tween_property($Control, 'rotation', target_rotation, runtime) \
+		.from(expected_rotation) \
+		.set_trans(trans_type) \
+		.set_ease(ease_type)
 	# We ensure the card_rotation value is also kept up to date
 	# But onlf it it's one of the expected multiples
 	if int(target_rotation) != card_rotation \
@@ -2196,10 +2199,10 @@ func _add_tween_position(
 		runtime := 0.3,
 		trans_type = Tween.TRANS_CUBIC,
 		ease_type = Tween.EASE_OUT):
-	$Tween.remove(self,'position')
-	$Tween.interpolate_property(self,'position',
-			expected_position, target_position, runtime,
-			trans_type, ease_type)
+	_tween.tween_property(self, 'position', target_position, runtime) \
+		.from(expected_position) \
+		.set_trans(trans_type) \
+		.set_ease(ease_type)
 
 
 # Card global position animation
@@ -2209,10 +2212,10 @@ func _add_tween_global_position(
 		runtime := 0.5,
 		trans_type = Tween.TRANS_BACK,
 		ease_type = Tween.EASE_IN_OUT):
-	$Tween.remove(self,'global_position')
-	$Tween.interpolate_property(self,'global_position',
-			expected_position, target_position, runtime,
-			trans_type, ease_type)
+	_tween.tween_property(self, 'global_position', target_position, runtime) \
+		.from(expected_position) \
+		.set_trans(trans_type) \
+		.set_ease(ease_type)
 
 
 # Card scale animation
@@ -2222,10 +2225,10 @@ func _add_tween_scale(
 		runtime := 0.3,
 		trans_type = Tween.TRANS_CUBIC,
 		ease_type = Tween.EASE_OUT):
-	$Tween.remove(self,'scale')
-	$Tween.interpolate_property(self,'scale',
-			expected_scale, target_scale, runtime,
-			trans_type, ease_type)
+	_tween.tween_property(self, 'scale', target_scale, runtime) \
+		.from(expected_scale) \
+		.set_trans(trans_type) \
+		.set_ease(ease_type)
 
 
 # A rudimentary Finite State Engine for cards.
@@ -2248,12 +2251,13 @@ func _process_card_state() -> void:
 			# in the rotation expected of their position
 			if cfc.game_settings.hand_use_oval_shape:
 				_target_rotation  = _recalculate_rotation()
-				if not $Tween.is_active() \
+				if not _tween.is_running() \
 						and not CFUtils.compare_floats($Control.rotation, _target_rotation):
+					_tween.kill()
+					_tween = create_tween()
 					_add_tween_rotation($Control.rotation,_target_rotation,
 						in_hand_tween_duration)
-					$Tween.start()
-			if not $Tween.is_active():
+			if not _tween.is_running():
 				state_finalized = true
 
 		CardState.FOCUSED_IN_HAND:
@@ -2267,7 +2271,7 @@ func _process_card_state() -> void:
 			buttons.set_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0,false,false)
-			if not $Tween.is_active() and \
+			if not _tween.is_running() and \
 					not _focus_completed and \
 					cfc.game_settings.focus_style != CFInt.FocusStyle.VIEWPORT:
 				var expected_position: Vector2 = recalculate_position()
@@ -2318,6 +2322,8 @@ func _process_card_state() -> void:
 				_target_rotation = expected_rotation
 				# We make sure to remove other tweens of the same type
 				# to avoid a deadlock
+				_tween.kill()
+				_tween = create_tween()
 				_add_tween_position(expected_position, _target_position, focus_tween_duration)
 				_add_tween_scale(scale, Vector2(1.5,1.5), focus_tween_duration)
 
@@ -2326,7 +2332,6 @@ func _process_card_state() -> void:
 				else:
 					# warning-ignore:return_value_discarded
 					set_card_rotation(0)
-				$Tween.start()
 				_focus_completed = true
 				# We don't change state yet, only when the focus is removed
 				# from this card
@@ -2342,8 +2347,10 @@ func _process_card_state() -> void:
 			buttons.set_active(false)
 			# warning-ignore:return_value_discarded
 			# set_card_rotation(0,false,false)
-			if not $Tween.is_active():
+			if not _tween.is_running():
 				var intermediate_position: Vector2
+				_tween.kill()
+				_tween = create_tween()
 				if not scale.is_equal_approx(Vector2(1,1)):
 					_add_tween_scale(scale, Vector2(1,1),to_container_tween_duration)
 				if cfc.game_settings.fancy_movement:
@@ -2394,8 +2401,7 @@ func _process_card_state() -> void:
 						intermediate_position = get_viewport().size/2
 					_add_tween_global_position(global_position, intermediate_position,
 						to_container_tween_duration)
-					$Tween.start()
-					await $Tween.loop_finished
+					await _tween.loop_finished
 					_tween_stuck_time = 0
 					_fancy_move_second_part = true
 				# We need to check again, just in case it's been reorganized instead.
@@ -2404,8 +2410,7 @@ func _process_card_state() -> void:
 						to_container_tween_duration, Tween.TRANS_SINE, Tween.EASE_IN_OUT)
 					_add_tween_rotation($Control.rotation,_target_rotation,
 						to_container_tween_duration)
-					$Tween.start()
-					await $Tween.loop_finished
+					await _tween.loop_finished
 					_determine_idle_state()
 				_fancy_move_second_part = false
 
@@ -2417,14 +2422,13 @@ func _process_card_state() -> void:
 			buttons.set_active(false)
 			# warning-ignore:return_value_discarded
 			set_card_rotation(0,false,false)
-			if not $Tween.is_active():
-				$Tween.remove(self,'position') #
+			if not _tween.is_running():
+				_tween.kill()
 				_add_tween_position(position, _target_position, reorganization_tween_duration)
 				if not scale.is_equal_approx(Vector2(1,1)):
 					_add_tween_scale(scale, Vector2(1,1), reorganization_tween_duration)
 				_add_tween_rotation($Control.rotation,_target_rotation,
 					reorganization_tween_duration)
-				$Tween.start()
 				set_state(CardState.IN_HAND)
 
 		CardState.PUSHED_ASIDE:
@@ -2434,8 +2438,10 @@ func _process_card_state() -> void:
 			set_control_mouse_filters(true)
 			buttons.set_active(false)
 			# warning-ignore:return_value_discarded
-			if not $Tween.is_active() and \
+			if not _tween.is_running() and \
 					not position.is_equal_approx(_target_position):
+				_tween.kill()
+				_tween = create_tween()
 				_add_tween_position(position, _target_position,
 					pushed_aside_tween_duration, Tween.TRANS_QUART, Tween.EASE_IN)
 				_add_tween_rotation($Control.rotation, _target_rotation,
@@ -2443,7 +2449,6 @@ func _process_card_state() -> void:
 				if not scale.is_equal_approx(Vector2(1,1)):
 					_add_tween_scale(scale, Vector2(1,1), pushed_aside_tween_duration,
 						Tween.TRANS_QUART, Tween.EASE_IN)
-				$Tween.start()
 				# We don't change state yet,
 				# only when the focus is removed from the neighbour
 
@@ -2452,12 +2457,13 @@ func _process_card_state() -> void:
 			set_focus(true)
 			set_control_mouse_filters(true)
 			buttons.set_active(false)
-			if (not $Tween.is_active() and
+			if (not _tween.is_running() and
 				not scale.is_equal_approx(CFConst.CARD_SCALE_WHILE_DRAGGING) and
 				get_parent() != cfc.NMAP.board):
+				_tween.kill()
+				_tween = create_tween()
 				_add_tween_scale(scale, CFConst.CARD_SCALE_WHILE_DRAGGING,
 					dragged_tween_duration, Tween.TRANS_SINE, Tween.EASE_IN)
-				$Tween.start()
 			# We need to capture the mouse cursos in the window while dragging
 			# because if the player drags the cursor outside the window and unclicks
 			# The control will not receive the mouse input
@@ -2484,13 +2490,14 @@ func _process_card_state() -> void:
 			set_focus(false)
 			set_control_mouse_filters(true)
 			buttons.set_active(false)
-			if not $Tween.is_active() and \
+			if not _tween.is_running() and \
 					not scale.is_equal_approx(Vector2(1,1) * play_area_scale):
+				_tween.kill()
+				_tween = create_tween()
 				_add_tween_scale(scale, Vector2(1,1) * play_area_scale,
 					on_board_tween_duration, Tween.TRANS_SINE, Tween.EASE_OUT)
-				$Tween.start()
 			_organize_attachments()
-			if not $Tween.is_active():
+			if not _tween.is_running():
 				state_finalized = true
 
 		CardState.DROPPING_TO_BOARD:

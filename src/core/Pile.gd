@@ -38,10 +38,12 @@ var _has_cards := false
 # The popup node
 var _opacity_tween : Tween
 var _tween : Tween
+var _popup_tween : Tween # $ViewPopup._tween
 
 var pre_sorted_order: Array
 
 func _ready():
+	super()
 	add_to_group("piles")
 	# warning-ignore:return_value_discarded
 	view_button.connect("pressed",Callable(self,'_on_View_Button_pressed'))
@@ -62,7 +64,6 @@ func _ready():
 			{"source": name}
 		]))
 
-
 func _process(_delta) -> void:
 	pass
 	# This performs a bit of garbage collection to make sure no Control temp objects
@@ -71,7 +72,7 @@ func _process(_delta) -> void:
 		if not obj.get_child_count():
 			obj.queue_free()
 	# We make sure to adjust our popup if cards were removed from it while it's open
-	$ViewPopup.set_as_minsize()
+#	$ViewPopup.set_as_minsize()
 	if _has_cards and cfc.game_settings.focus_style:
 		var top_card = get_top_card()
 		if cfc.NMAP.board.mouse_pointer in get_overlapping_areas()\
@@ -96,21 +97,22 @@ func _on_ViewSorted_Button_pressed() -> void:
 
 # Ensures the popup window interpolates to visibility when opened
 func _on_ViewPopup_about_to_show() -> void:
-	if not $ViewPopup._tween.is_running():
-		$ViewPopup._tween.tween_property($ViewPopup, 'modulate', Color(1,1,1,1), 0.5)
-		$ViewPopup._tween.from(Color(1,1,1,0))
-		$ViewPopup._tween.set_trans(Tween.TRANS_EXPO)
-		$ViewPopup._tween.set_ease(Tween.EASE_IN)
+	if _popup_tween: _popup_tween.kill()
+	_popup_tween = $ViewPopup.create_tween()
+	_popup_tween.tween_property($ViewPopup, 'transparent', false, 0.5) \
+		.from(true) \
+		.set_trans(Tween.TRANS_EXPO) \
+		.set_ease(Tween.EASE_IN)
 
 # Puts all [Card] objects to the root node once the popup view window closes
 func _on_ViewPopup_popup_hide() -> void:
-	$ViewPopup._tween.kill()
-	$ViewPopup._tween = $ViewPopup.create_tween()
-	$ViewPopup._tween.tween_property($ViewPopup, 'modulate', Color(1,1,1,0), 0.5)
-	$ViewPopup._tween.set_trans(Tween.TRANS_EXPO)
-	$ViewPopup._tween.set_ease(Tween.EASE_OUT)
-	$ViewPopup._tween.from(Color(1,1,1,1))
-	await $ViewPopup._tween.finished
+	if _popup_tween: _popup_tween.kill()
+	_popup_tween = $ViewPopup.create_tween()
+	_popup_tween.tween_property($ViewPopup, 'transparent', true, 0.5) \
+		.from(false) \
+		.set_trans(Tween.TRANS_EXPO) \
+		.set_ease(Tween.EASE_OUT)
+	await _popup_tween.finished
 	for card in pre_sorted_order:
 		# For each card we have hosted, we check if it's hosted in the popup.
 		# If it is, we move it to the root.
@@ -186,16 +188,15 @@ func add_child(node, _legible_unique_name=false, _internal_mode = Node.INTERNAL_
 			_has_cards = true
 			# By raising the $Control every time a card is added
 			# we ensure it's always drawn on top of the card objects
-			$Control.raise()
+			$Control.move_to_front()
 			# If this was the first card which enterred this pile
 			# We hide the pile "floor" by making it transparent
 			if get_card_count() >= 1:
-				if not _opacity_tween.is_running():
-					#_opacity_tween.remove($Control,'self_modulate:a')
-					_opacity_tween = create_tween()
-					_opacity_tween.tween_property($Control, 'self_modulate:a', 0.0, 1)
-					_opacity_tween.set_trans(Tween.TRANS_SINE)
-					_opacity_tween.set_ease(Tween.EASE_OUT)
+				if _opacity_tween: _opacity_tween.kill()
+				_opacity_tween = create_tween()
+				_opacity_tween.tween_property($Control, 'self_modulate:a', 0.0, 1) \
+					.set_trans(Tween.TRANS_SINE) \
+					.set_ease(Tween.EASE_OUT)
 			card_count_label.text = str(get_card_count())
 	elif node as Card: # This triggers if the ViewPopup node is active
 		# When the player adds card while the viewpopup is active
@@ -215,12 +216,11 @@ func remove_child(node, _legible_unique_name=false) -> void:
 	if get_card_count() == 0:
 		_has_cards = false
 		reorganize_stack()
-		if not _opacity_tween.is_running():
-			_opacity_tween.kill()
-			_opacity_tween = create_tween()
-			_opacity_tween.tween_property($Control, 'self_modulate:a', 0.4, 0.5)
-			_opacity_tween.set_trans(Tween.TRANS_SINE)
-			_opacity_tween.set_ease(Tween.EASE_IN)
+		if _opacity_tween: _opacity_tween.kill()
+		_opacity_tween = create_tween()
+		_opacity_tween.tween_property($Control, 'self_modulate:a', 0.4, 0.5) \
+			.set_trans(Tween.TRANS_SINE) \
+			.set_ease(Tween.EASE_IN)
 	else:
 		$Control.self_modulate.a = 0.0
 
@@ -264,7 +264,7 @@ func reorganize_stack() -> void:
 @warning_ignore("native_method_override")
 func move_child(child_node, to_position) -> void:
 	super.move_child(child_node, to_position)
-	$Control.raise()
+	$Control.move_to_front()
 
 # The top position of a pile, is always the lowest
 func move_card_to_top(card: Card) -> void:
@@ -338,7 +338,7 @@ func shuffle_cards(animate = true) -> void:
 	# but if we did so, we would not be able to refer to it from the Card
 	# class, as that would cause a cyclic dependency on the parser
 	# So we've placed it in CFConst instead.
-	if not _tween.is_running() \
+	if (not _tween or not _tween.is_running()) \
 			and animate \
 			and shuffle_style != CFConst.ShuffleStyle.NONE \
 			and get_card_count() > 1:
@@ -383,9 +383,10 @@ func shuffle_cards(animate = true) -> void:
 		else:
 			style = shuffle_style
 		if style == CFConst.ShuffleStyle.CORGI:
+			if _tween: _tween.kill()
+			_tween = create_tween()
 			_add_tween_position(position,shuffle_position,0.2)
 			_add_tween_rotation(rotation_degrees,shuffle_rotation,0.2)
-			_tween.play()
 			# We move the pile to a more central location to see the anim
 			await _tween.finished
 			# The animation speeds have been empirically tested to look good
@@ -408,9 +409,10 @@ func shuffle_cards(animate = true) -> void:
 			# their original position.
 			await get_tree().create_timer(anim_speed * 2.5).timeout
 		elif style == CFConst.ShuffleStyle.SPLASH:
+			if _tween: _tween.kill()
+			_tween = create_tween()
 			_add_tween_position(position,shuffle_position,0.2)
 			_add_tween_rotation(rotation_degrees,shuffle_rotation,0.2)
-			_tween.play()
 			await _tween.finished
 			# The animation speeds have been empirically tested to look good
 			anim_speed = 0.6
@@ -425,9 +427,10 @@ func shuffle_cards(animate = true) -> void:
 			# To the starting location, and let reorganize_stack() do its magic
 			await get_tree().create_timer(anim_speed + 0.6).timeout
 		elif style == CFConst.ShuffleStyle.SNAP:
+			if _tween: _tween.kill()
+			_tween = create_tween()
 			_add_tween_position(position,shuffle_position,0.2)
 			_add_tween_rotation(rotation_degrees,shuffle_rotation,0.2)
-			_tween.play()
 			await _tween.finished
 			anim_speed = 0.2
 			var card = get_random_card()
@@ -444,7 +447,7 @@ func shuffle_cards(animate = true) -> void:
 				# The bigger the deck, the smallest the percentage of cards
 				# in it, that will bounce
 				var resize_div: float = 2 + 0.1 * random_cards.size()
-				random_cards.resize(random_cards.size() / resize_div)
+				random_cards.resize((int)(random_cards.size() / resize_div))
 				for card in random_cards:
 					card.animate_shuffle(anim_speed, CFConst.ShuffleStyle.OVERHAND)
 				await get_tree().create_timer(anim_speed * 2.3).timeout
@@ -453,9 +456,10 @@ func shuffle_cards(animate = true) -> void:
 				super.shuffle_cards()
 				reorganize_stack()
 		if position != init_position:
+			if _tween: _tween.kill()
+			_tween = create_tween()
 			_add_tween_position(position,init_position,0.2)
 			_add_tween_rotation(rotation_degrees,0,0.2)
-			_tween.play()
 		z_index = 0
 	else:
 		# if we're already running another animation, just shuffle
@@ -478,10 +482,10 @@ func _add_tween_rotation(
 		runtime := 0.3,
 		trans_type = Tween.TRANS_BACK,
 		ease_type = Tween.EASE_IN_OUT):
-	_tween.remove(self,'rotation_degrees')
-	_tween.interpolate_property(self,'rotation_degrees',
-			expected_rotation, target_rotation, runtime,
-			trans_type, ease_type)
+	_tween.tween_property(self, 'rotation_degrees', target_rotation, runtime) \
+		.from(expected_rotation) \
+		.set_trans(trans_type) \
+		.set_ease(ease_type)
 
 
 # Card position animation
@@ -491,7 +495,7 @@ func _add_tween_position(
 		runtime := 0.3,
 		trans_type = Tween.TRANS_CUBIC,
 		ease_type = Tween.EASE_OUT):
-	_tween.remove(self,'position')
-	_tween.interpolate_property(self,'position',
-			expected_position, target_position, runtime,
-			trans_type, ease_type)
+	_tween.tween_property(self, 'position', target_position, runtime) \
+		.from(expected_position) \
+		.set_trans(trans_type) \
+		.set_ease(ease_type)

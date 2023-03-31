@@ -39,6 +39,7 @@ var _excess_discard_pile : Pile = null
 @onready var _counter_cards = $Counters/Cards
 
 func _ready() -> void:
+	super()
 	add_to_group("hands")
 
 func prepare_excess_discard_pile() -> void:
@@ -193,7 +194,7 @@ func re_place() -> void:
 		# This yield allows the other control nodes to set their side
 		# In which case the hand, which is typically set to expand vertically
 		# doesn't expand too much
-		await get_tree().idle_frame
+		await get_tree().process_frame
 		$Control.call_deferred("set_size", get_parent().size)
 #		$Control.size = get_parent().size
 #		print_debug(get_parent().size)
@@ -213,7 +214,7 @@ func re_place() -> void:
 	# hand-size.
 	call_deferred("_init_control_size")
 	if not cfc.ut:
-		await get_tree().idle_frame
+		await get_tree().process_frame
 	for c in get_all_cards():
 		c.position = c.recalculate_position()
 

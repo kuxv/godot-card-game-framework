@@ -86,7 +86,7 @@ func add_info(
 		if info_panel.visible: 
 			child_count += 1
 	if existing_details.has("illustration"):
-		existing_details["illustration"].raise()
+		existing_details["illustration"].move_to_front()
 	columns = 1 + int(float(child_count) / float(panel_column_threshold))
 
 
