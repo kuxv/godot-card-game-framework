@@ -202,6 +202,7 @@ signal scripts_executed(card, sceng, trigger)
 # If not set, will be set to the value of the Name label in the front.
 # if that is also not set, will be set.
 # to the human-readable value of the "name" node property.
+var m_canonical_name : String
 var canonical_name : String : get = get_card_name, set = set_card_name_setter
 # Ensures all nodes fit inside this rect.
 var card_size := canonical_size : set = set_card_size_setter
@@ -983,7 +984,7 @@ func set_card_name(value : String, set_label := true) -> void:
 	# if the card_front.card_labels variable is not set it means ready() has not
 	# run yet, so we just store the card name for later.
 	if not card_front:
-		canonical_name = value
+		m_canonical_name = value
 	else:
 		# We set all areas of the card to match the canonical name.
 		var name_label = card_front.card_labels["Name"]
@@ -992,13 +993,13 @@ func set_card_name(value : String, set_label := true) -> void:
 		elif set_label:
 			card_front.set_label_text(name_label,value)
 		name = value
-		canonical_name = value
+		m_canonical_name = value
 		properties["Name"] = value
 
 
 # Getter for canonical_name
 func get_card_name() -> String:
-	return canonical_name
+	return m_canonical_name
 
 
 # Overwrites the built-in set name, so that it also sets canonical_name
@@ -1008,7 +1009,7 @@ func get_card_name() -> String:
 func set_name(value : String) -> void:
 	super.set_name(value)
 	card_front.card_labels["Name"].text = value
-	canonical_name = value
+	m_canonical_name = value
 
 
 # Sets the card state and sends a signal.
