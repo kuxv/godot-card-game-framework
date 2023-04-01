@@ -1,9 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://cont608btcl2l"]
+[gd_scene load_steps=7 format=3 uid="uid://cont608btcl2l"]
 
 [ext_resource type="Script" path="res://src/custom/CGFCardFront.gd" id="2"]
 [ext_resource type="Theme" uid="uid://crxytvr6og0pk" path="res://themes/darktheme/darktheme.theme" id="3"]
-[ext_resource type="Texture2D" uid="uid://cqj66emsrf4vw" path="res://assets/icons/fist.png" id="4"]
-[ext_resource type="Texture2D" uid="uid://mry72vnwcqsv" path="res://assets/icons/rupee.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://b0pwx3w0seoe4" path="res://assets/icons/fist.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://dmvxifssjecmv" path="res://assets/icons/rupee.png" id="5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7cw5b"]
+bg_color = Color(0.145098, 0.145098, 0.145098, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rss3p"]
+corner_radius_top_left = 10
+corner_radius_top_right = 10
 
 [node name="Front" type="Panel"]
 custom_minimum_size = Vector2(150, 240)
@@ -14,6 +25,7 @@ offset_right = -1130.0
 offset_bottom = -480.0
 mouse_filter = 2
 theme = ExtResource("3")
+theme_override_styles/panel = SubResource("StyleBoxFlat_7cw5b")
 script = ExtResource("2")
 
 [node name="Margin" type="MarginContainer" parent="."]
@@ -32,13 +44,17 @@ mouse_filter = 2
 custom_minimum_size = Vector2(146, 19)
 layout_mode = 2
 size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 0.4, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_rss3p")
 text = "Card Name"
+horizontal_alignment = 1
 
 [node name="Type" type="Label" parent="Margin/CardText"]
 custom_minimum_size = Vector2(146, 13)
 layout_mode = 2
 size_flags_vertical = 1
 text = "Type"
+horizontal_alignment = 1
 uppercase = true
 
 [node name="Tags" type="Label" parent="Margin/CardText"]
@@ -46,12 +62,15 @@ custom_minimum_size = Vector2(146, 17)
 layout_mode = 2
 size_flags_vertical = 1
 text = "Tag1 - Tag2"
+horizontal_alignment = 1
 uppercase = true
 
 [node name="Requirements" type="Label" parent="Margin/CardText"]
 custom_minimum_size = Vector2(146, 14)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.290196, 0.752941, 0, 1)
 text = "Requirements"
+horizontal_alignment = 1
 
 [node name="Abilities" type="RichTextLabel" parent="Margin/CardText"]
 layout_mode = 2
@@ -77,6 +96,7 @@ stretch_mode = 6
 [node name="Cost" type="Label" parent="Margin/CardText/HB"]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.658824, 0.541176, 0, 1)
 text = "0"
 
 [node name="Push" type="Control" parent="Margin/CardText/HB"]
@@ -95,4 +115,5 @@ stretch_mode = 6
 [node name="Power" type="Label" parent="Margin/CardText/HB"]
 custom_minimum_size = Vector2(15, 15)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.658824, 0.541176, 0, 1)
 text = "0"

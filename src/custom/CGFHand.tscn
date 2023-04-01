@@ -12,9 +12,6 @@ placement = 7
 [node name="Control" parent="." index="0"]
 grow_vertical = 0
 
-[node name="Highlight" parent="Control" index="0"]
-anchors_preset = 0
-
 [node name="DiscardRandom" type="Button" parent="Control/ManipulationButtons" index="1" groups=["manipulation_button"]]
 layout_mode = 2
 mouse_filter = 1

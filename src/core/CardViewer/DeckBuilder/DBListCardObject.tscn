@@ -1,13 +1,13 @@
 [gd_scene load_steps=5 format=3 uid="uid://doix5tdiai1ee"]
 
-[ext_resource type="PackedScene" path="res://src/core/CardViewer/CardLabel.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://yf7gns0adddy" path="res://src/core/CardViewer/CardLabel.tscn" id="1"]
 [ext_resource type="Script" path="res://src/core/CardViewer/DeckBuilder/QuantityNumberButton.gd" id="2"]
 [ext_resource type="Script" path="res://src/core/IntegerLineEdit.gd" id="3"]
 [ext_resource type="Script" path="res://src/core/CardViewer/DeckBuilder/DBListCardObject.gd" id="4"]
 
 [node name="DBListCardObject" type="HBoxContainer"]
 offset_right = 628.0
-offset_bottom = 20.0
+offset_bottom = 31.0
 script = ExtResource("4")
 
 [node name="Quantity" type="HBoxContainer" parent="."]

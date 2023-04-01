@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://ct7hk34s7cjll" path="res://src/core/Highlight.tscn" id="3"]
 
 [sub_resource type="RectangleShape2D" id="4"]
-size = Vector2(78, 123)
+size = Vector2(156, 246)
 
 [node name="Pile" type="Area2D" groups=["piles"]]
 script = ExtResource("2")
@@ -15,6 +15,7 @@ mouse_filter = 1
 
 [node name="Highlight" parent="Control" instance=ExtResource("3")]
 layout_mode = 0
+anchors_preset = 0
 anchor_right = 0.0
 anchor_bottom = 0.0
 offset_left = 0.0

@@ -16,6 +16,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("12")
 script = ExtResource("5")
@@ -26,17 +28,11 @@ script = ExtResource("4")
 pile_name = "Deck"
 placement = 8
 
-[node name="Highlight" parent="Deck/Control" index="0"]
-anchors_preset = 0
-
 [node name="Discard" parent="." instance=ExtResource("2")]
 position = Vector2(1124, 475)
 script = ExtResource("1")
 faceup_cards = true
 placement = 6
-
-[node name="Highlight" parent="Discard/Control" index="0"]
-anchors_preset = 0
 
 [node name="Hand" parent="." instance=ExtResource("3")]
 position = Vector2(155, 480)

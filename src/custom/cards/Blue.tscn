@@ -2,11 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://cjmb51f4u0djb" path="res://src/custom/CGFCardTemplate.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://kkw5tef7mw83" path="res://src/custom/CGFCardBack.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://src/custom/cards/BlueFront.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://diqff0077owfs" path="res://src/custom/cards/BlueFront.tscn" id="3"]
 
 [node name="Card" instance=ExtResource("1")]
 card_back_design = ExtResource("2")
 card_front_design = ExtResource("3")
-
-[node name="Highlight" parent="Control" index="0"]
-anchors_preset = 0

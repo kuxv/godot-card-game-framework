@@ -4,6 +4,8 @@
 [ext_resource type="Script" path="res://src/core/IntegerLineEdit.gd" id="2"]
 
 [node name="AskInteger" type="AcceptDialog"]
+title = "Please enter number"
+size = Vector2i(182, 88)
 dialog_hide_on_ok = false
 script = ExtResource("1")
 
@@ -11,21 +13,21 @@ script = ExtResource("1")
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 174.0
-offset_bottom = 32.0
+offset_bottom = 39.0
 mouse_filter = 2
 
 [node name="HorizontalHighlights" type="Panel" parent="."]
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 174.0
-offset_bottom = 32.0
+offset_bottom = 39.0
 mouse_filter = 2
 
 [node name="IntegerLineEdit" type="LineEdit" parent="."]
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 174.0
-offset_bottom = 32.0
+offset_bottom = 39.0
 caret_blink = true
 caret_blink_interval = 0.5
 script = ExtResource("2")

@@ -8,6 +8,3 @@
 card_back_design = ExtResource("2")
 card_front_design = ExtResource("3")
 disable_dropping_to_cardcontainers = true
-
-[node name="Highlight" parent="Control" index="0"]
-anchors_preset = 0
