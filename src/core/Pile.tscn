@@ -8,6 +8,7 @@ size = Vector2(156, 246)
 
 [node name="Pile" type="Area2D" groups=["piles"]]
 script = ExtResource("2")
+metadata/_edit_group_ = true
 
 [node name="Control" type="Panel" parent="."]
 self_modulate = Color(1, 1, 1, 0.5)
@@ -22,6 +23,7 @@ offset_left = 0.0
 offset_top = 0.0
 offset_right = 0.0
 offset_bottom = 0.0
+metadata/_edit_group_ = true
 
 [node name="CenterContainer" type="CenterContainer" parent="Control"]
 layout_mode = 0
@@ -93,6 +95,7 @@ offset_left = 15.977
 offset_top = -84.0894
 offset_right = 55.977
 offset_bottom = -34.0894
+metadata/_edit_group_ = true
 
 [node name="Position" type="Label" parent="Debug"]
 layout_mode = 2
