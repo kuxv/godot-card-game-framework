@@ -14,16 +14,18 @@ const _CARD_SELECT_SCENE = preload(_CARD_SELECT_SCENE_FILE)
 func populate_info_panels(card: Card, focus_info: DetailPanels) -> void:
 	focus_info.hide_all_info()
 	var card_illustration = await card.get_property("_illustration")
-	if card_illustration:
+	if card_illustration["value"]:
 		focus_info.show_illustration("Illustration by: " + card_illustration)
 	else:
 		focus_info.hide_illustration()
-	for tag in await card.get_property("Tags"):
+		
+	var card_tags = await card.get_property("Tags")
+	for tag in card_tags["value"]:
 		if CardConfig.EXPLANATIONS.has(tag):
 			focus_info.add_info(tag, CardConfig.EXPLANATIONS[tag])
 	var card_keywords = await card.get_property("_keywords")
-	if card_keywords:
-		for keyword in card_keywords:
+	if card_keywords["value"]:
+		for keyword in card_keywords["value"]:
 			if CardConfig.EXPLANATIONS.has(keyword):
 				focus_info.add_info(keyword, CardConfig.EXPLANATIONS[keyword])
 
