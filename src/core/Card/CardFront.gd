@@ -296,9 +296,11 @@ func _assign_bbcode_text(rtlabel: RichTextLabel, text : String, font_size: int) 
 		format[key] = format[key].format(bbcode_format)
 	if rtlabel == card_labels["Name"]:
 		_add_title_bbcode(rtlabel)
-	rtlabel.append_text("[center]" + text.format(format) + "[/center]")
-	#	print_debug(text.format(format))
+	rtlabel.push_paragraph(HORIZONTAL_ALIGNMENT_CENTER)
+	rtlabel.append_text(text.format(format))
 	rtlabel.pop()
+#	rtlabel.append_text("[center]" +  + "[/center]")
+	#	print_debug(text.format(format))
 	if rtlabel == card_labels["Name"]:
 		_pop_title_bbcode(rtlabel)
 
