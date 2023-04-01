@@ -58,10 +58,11 @@ func set_label_text(node: Label, value, in_scale: float = 1):
 	resizing_labels.append(node)
 	value = _check_for_replacements(node, value)
 	var label_font :Font = get_card_label_font(node)
+	var label_font_size = get_theme_font_size(label_font.get_font_name())
 #	print_debug(scaled_fonts.get(node.name, 1))
 	var cached_font_size = get_cached_font_size(node,value,in_scale)
 	if cached_font_size:
-		label_font.size = cached_font_size
+		label_font_size = cached_font_size
 	else:
 		# We add a yield here to allow the calling function to continue
 		# and thus avoid the game waiting for the label to resize
@@ -80,14 +81,13 @@ func set_label_text(node: Label, value, in_scale: float = 1):
 		if not line_spacing:
 			line_spacing = 3
 		var starting_font_size: int = font_sizes[node.name]
-		label_font.size = starting_font_size
 		var font_adjustment := _adjust_font_size(label_font, working_value, node.custom_minimum_size, line_spacing)
 	#	if  node.name == "Abilities": font_adjustment = -17
 		# We always start shrinking the size, starting from the original size.
 #		print_debug(scaled_fonts.get(node.name, 1))
 		_cache_font_size(node,value,starting_font_size + font_adjustment,in_scale)
-		label_font.size = starting_font_size + font_adjustment
-	set_card_label_font(node, label_font)
+		label_font_size = starting_font_size + font_adjustment
+	set_card_label_font(node, label_font, label_font_size)
 	node.text = value
 	resizing_labels.erase(node)
 
@@ -112,8 +112,9 @@ func get_card_label_font(label: Label) -> Font:
 # We use an external function to get the font, to allow it to be overriden
 # by classes extending this, to allow them to use their own methods
 # (e.g. based on themes)
-func set_card_label_font(label: Label, font: Font) -> void:
+func set_card_label_font(label: Label, font: Font, size: int) -> void:
 	label.add_theme_font_override("font", font)
+	label.add_theme_font_size_override("font", size)
 
 
 # We use this as an alternative to scaling the card using the "scale" property.
@@ -379,12 +380,14 @@ func _adjust_font_size(
 		line_spacing := 3) -> int:
 	var adjustment_font := font.duplicate(true)
 	var line_height = font.get_height()
+	var font_size = get_theme_font_size(font.get_font_name())
+	var adjustment_font_size = get_theme_font_size(adjustment_font.get_font_name())
 	var adjustment := 0
 	# line_spacing should be calculated into size
 	# This calculates the amount of vertical pixels the text would take
 	# once it was word-wrapped.
-	var label_rect_y = adjustment_font.get_wordwrap_string_size(
-			text, label_size.x).y \
+	var label_rect_y = adjustment_font.get_multiline_string_size(
+			text, 0, label_size.x).y \
 			/ line_height \
 			* (line_height + line_spacing) \
 			- line_spacing
@@ -393,14 +396,14 @@ func _adjust_font_size(
 	# it's small enough to stay within the boundaries
 	while label_rect_y > label_size.y:
 		adjustment -= 1
-		adjustment_font.size = font.size + adjustment
+		adjustment_font_size = font_size + adjustment
 		line_height = adjustment_font.get_height()
-		label_rect_y = adjustment_font.get_wordwrap_string_size(
-				text,label_size.x).y \
+		label_rect_y = adjustment_font.get_multiline_string_size(
+				text, 0, label_size.x).y \
 				/ line_height \
 				* (line_height + line_spacing) \
 				- line_spacing
-		if adjustment_font.size < 5:
+		if adjustment_font_size < 5:
 			break
 	return(adjustment)
 
