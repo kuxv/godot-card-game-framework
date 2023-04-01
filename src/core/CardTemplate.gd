@@ -309,6 +309,10 @@ var _flip_tween : Tween # $Control/FlipTween
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	_tween = create_tween()
+	_tween.kill()
+	_flip_tween = create_tween()
+	_flip_tween.kill()
 	targeting_arrow = targeting_arrow_scene.instantiate()
 	add_child(targeting_arrow)
 	set_card_size(card_size)
@@ -368,7 +372,7 @@ func _init_card_name() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta) -> void:
-	if _tween and _tween.is_running() and not cfc.ut: # Debug code for catch potential Tween deadlocks
+	if _tween.is_running() and not cfc.ut: # Debug code for catch potential Tween deadlocks
 		_tween_stuck_time += delta
 		if _tween_stuck_time > 5 and int(fmod(_tween_stuck_time,3)) == 2 :
 			print_debug("Tween Stuck for ",_tween_stuck_time,
@@ -1065,7 +1069,9 @@ func set_card_rotation(
 				and not get_parent().is_in_group("hands") \
 				and cfc.game_settings.hand_use_oval_shape \
 				and $Control.rotation != 0.0 \
-				and (not _tween or not _tween.is_running()):
+				and not _tween.is_running():
+			_tween.kill()
+			_tween = create_tween()
 			_add_tween_rotation($Control.rotation,value)
 			_tween.stop()
 			if start_tween:
@@ -1090,6 +1096,8 @@ func set_card_rotation(
 			# to avoid a deadlock
 			# There's no way to rotate the Area2D node,
 			# so we just rotate the internal $Control. The results are the same.
+			_tween.kill()
+			_tween = create_tween()
 			_add_tween_rotation($Control.rotation,value)
 			# We only start the animation if this flag is set to true
 			# This allows us to set the card to rotate on the next
@@ -1272,7 +1280,7 @@ func move_to(targetHost: Node,
 			else:
 				# Added because sometimes it ended up stuck and a card remained
 				# visible on top of deck
-				$Tween.kill()
+				_tween.kill()
 				# We need to adjust the end position based on the local rect inside
 				# the container control node
 				# So we transform global coordinates to container rect coordinates.
@@ -2136,41 +2144,39 @@ func _flip_card(to_invisible: Control, to_visible: Control, instant := false) ->
 	else:
 		# We clear existing tweens to avoid a deadlocks
 		for n in [_card_front_container, _card_back_container, highlight]:
-			_flip_tween.remove(n,'scale')
-			_flip_tween.remove(n,'position')
-		_flip_tween.interpolate_property(to_invisible,'scale',
-				to_invisible.scale, Vector2(0,1), 0.4,
-				Tween.TRANS_QUAD, Tween.EASE_IN)
-		_flip_tween.interpolate_property(to_invisible,'position',
-				to_invisible.position, Vector2(
-				to_invisible.size.x/2,0), 0.4,
-				Tween.TRANS_QUAD, Tween.EASE_IN)
-		_flip_tween.interpolate_property(highlight,'scale',
-				highlight.scale, Vector2(0,1), 0.4,
-				Tween.TRANS_QUAD, Tween.EASE_IN)
+			_flip_tween.kill()
+			_flip_tween = create_tween()
+		_flip_tween.tween_property(to_invisible, 'scale', Vector2(0,1), 0.4) \
+			.set_trans(Tween.TRANS_QUAD) \
+			.set_ease(Tween.EASE_IN)
+		_flip_tween.tween_property(to_invisible, 'position', Vector2(to_invisible.size.x/2,0), 0.4) \
+			.set_trans(Tween.TRANS_QUAD) \
+			.set_ease(Tween.EASE_IN)
+		_flip_tween.tween_property(highlight, 'scale', Vector2(0,1), 0.4) \
+			.set_trans(Tween.TRANS_QUAD) \
+			.set_ease(Tween.EASE_IN)
 		# The highlight is larger than the card size, but also offset a bit
 		# so that it's still centered. This way its borders only extend
 		# over the card borders. We need to offest to the right location.
-		_flip_tween.interpolate_property(highlight,'position',
-				highlight.position, Vector2(
-				(highlight.size.x-3)/2,0), 0.4,
-				Tween.TRANS_QUAD, Tween.EASE_IN)
-		_flip_tween.start()
+		_flip_tween.tweem_property(highlight, 'position', Vector2((highlight.size.x-3)/2,0), 0.4) \
+			.set_trans(Tween.TRANS_QUAD) \
+			.set_ease(Tween.EASE_IN)
 		await _flip_tween.loop_finished
 		to_visible.visible = true
 		to_invisible.visible = false
-		_flip_tween.interpolate_property(to_visible,'scale',
-				to_visible.scale, Vector2(1,1), 0.4,
-				Tween.TRANS_QUAD, Tween.EASE_OUT)
-		_flip_tween.interpolate_property(to_visible,'position',
-				to_visible.position, Vector2(0,0), 0.4,
-				Tween.TRANS_QUAD, Tween.EASE_OUT)
-		_flip_tween.interpolate_property(highlight,'scale',
-				highlight.scale, Vector2(1,1), 0.4,
-				Tween.TRANS_QUAD, Tween.EASE_OUT)
-		_flip_tween.interpolate_property(highlight,'position',
-				highlight.position, Vector2(-3,-3), 0.4,
-				Tween.TRANS_QUAD, Tween.EASE_OUT)
+#		FIXME: kill()?
+		_flip_tween.tween_property(to_visible, 'scale', Vector2(1,1), 0.4) \
+			.set_trans(Tween.TRANS_QUAD) \
+			.set_ease(Tween.EASE_OUT)
+		_flip_tween.tween_property(to_visible, 'position', Vector2(0,0), 0.4) \
+			.set_trans(Tween.TRANS_QUAD) \
+			.set_ease(Tween.EASE_OUT)
+		_flip_tween.tween_property(highlight, 'scale', Vector2(1,1), 0.4) \
+			.set_trans(Tween.TRANS_QUAD) \
+			.set_ease(Tween.EASE_OUT)
+		_flip_tween.tween_property(highlight, 'position', Vector2(-3,-3), 0.4) \
+			.set_trans(Tween.TRANS_QUAD) \
+			.set_ease(Tween.EASE_OUT)
 		_flip_tween.start()
 
 
@@ -2507,8 +2513,9 @@ func _process_card_state() -> void:
 			# Used when dropping the cards to the table
 			# When dragging the card, the card is slightly behind the mouse cursor
 			# so we tween it to the right location
-			if not $Tween.is_active():
-				$Tween.remove(self,'position') # We make sure to remove other tweens of the same type to avoid a deadlock
+			if not _tween.is_running():
+				_tween.kill() # We make sure to remove other tweens of the same type to avoid a deadlock
+				_tween = create_tween()
 #				_target_position = _determine_board_position_from_mouse()
 #				# The below ensures the card doesn't leave the viewport dimentions
 #				if _target_position.x + card_size.x * play_area_scale.x > get_viewport().size.x:
@@ -2526,7 +2533,6 @@ func _process_card_state() -> void:
 				if not scale.is_equal_approx(Vector2(1,1) * play_area_scale):
 					_add_tween_scale(scale, Vector2(1,1) * play_area_scale, to_board_tween_duration,
 							Tween.TRANS_BOUNCE, Tween.EASE_OUT)
-				$Tween.start()
 				set_state(CardState.ON_PLAY_BOARD)
 
 		CardState.FOCUSED_ON_BOARD:
@@ -2554,7 +2560,7 @@ func _process_card_state() -> void:
 					return
 				set_is_faceup(get_parent().faceup_cards, true)
 				ensure_proper()
-			if not $Tween.is_active():
+			if not _tween.is_running():
 				state_finalized = true
 
 
@@ -2571,7 +2577,7 @@ func _process_card_state() -> void:
 				scale = Vector2(1,1)
 			if get_parent() in get_tree().get_nodes_in_group("piles"):
 				set_is_faceup(get_parent().faceup_cards, true)
-			if not $Tween.is_active():
+			if not _tween.is_running():
 				state_finalized = true
 
 		CardState.IN_POPUP:
@@ -2591,7 +2597,7 @@ func _process_card_state() -> void:
 				scale = Vector2(0.75,0.75)
 			if position != Vector2(0,0):
 				position = Vector2(0,0)
-			if not $Tween.is_active():
+			if not _tween.is_running():
 				state_finalized = true
 
 		CardState.FOCUSED_IN_POPUP:
@@ -2629,7 +2635,7 @@ func _process_card_state() -> void:
 			if not is_faceup:
 				if is_viewed:
 					_flip_card(_card_back_container,_card_front_container, true)
-			if not $Tween.is_active():
+			if not _tween.is_running():
 				state_finalized = true
 
 		CardState.PREVIEW:
@@ -2649,7 +2655,7 @@ func _process_card_state() -> void:
 #				set_card_size(CFConst.CARD_SIZE * CFConst.PREVIEW_SCALE)
 				resize_recursively(_control, preview_scale * cfc.curr_scale)
 				card_front.scale_to(preview_scale * cfc.curr_scale)
-			if not $Tween.is_active():
+			if not _tween.is_running():
 				state_finalized = true
 
 		CardState.DECKBUILDER_GRID:
@@ -2671,7 +2677,7 @@ func _process_card_state() -> void:
 #				set_card_size(CFConst.CARD_SIZE * thumbnail_scale)
 				resize_recursively(_control, thumbnail_scale * cfc.curr_scale)
 				card_front.scale_to(thumbnail_scale * cfc.curr_scale)
-			if not $Tween.is_active():
+			if not _tween.is_running():
 				state_finalized = true
 
 		CardState.MOVING_TO_SPAWN_DESTINATION:
@@ -2679,11 +2685,12 @@ func _process_card_state() -> void:
 			set_focus(false)
 			set_control_mouse_filters(false)
 			buttons.set_active(false)
-			if not _tween.is_active()\
+			if not _tween.is_arunning()\
 					and not scale.is_equal_approx(Vector2(1,1)):
+				_tween.kill()
+				_tween = create_tween()
 				_add_tween_scale(scale, Vector2(1,1),0.75)
 				_add_tween_global_position(global_position, get_viewport().size/2 - CFConst.CARD_SIZE/2)
-				_tween.start()
 				await _tween.loop_finished
 				_tween_stuck_time = 0
 				move_to(spawn_destination)
