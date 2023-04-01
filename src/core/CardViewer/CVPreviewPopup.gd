@@ -61,7 +61,7 @@ func _set_placement() -> void:
 	
 # Figures out where to place the card preview in respect to the player's mouse.
 func get_preview_placement() -> Vector2:
-	# warning-ignore:unassigned_variable
+	@warning_ignore("unassigned_variable")
 	var ret : Vector2
 	var focus_panel_offset = 0
 	var card_size : Vector2 = preview_card.canonical_size * preview_card.preview_scale * cfc.curr_scale

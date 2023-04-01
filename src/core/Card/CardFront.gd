@@ -14,6 +14,7 @@ extends Panel
 # See "res://src/custom/CGFCardFront.gd" for an example.
 var card_labels := {}
 # Simply points to the container which holds all the labels
+@warning_ignore("unused_private_class_variable")
 var _card_text
 # It stores the font sizes as required by the developer. We keep it stored
 # In order to be able to compare against it during scale_to()
@@ -112,9 +113,9 @@ func get_card_label_font(label: Label) -> Font:
 # We use an external function to get the font, to allow it to be overriden
 # by classes extending this, to allow them to use their own methods
 # (e.g. based on themes)
-func set_card_label_font(label: Label, font: Font, size: int) -> void:
+func set_card_label_font(label: Label, font: Font, in_size: int) -> void:
 	label.add_theme_font_override("font", font)
-	label.add_theme_font_size_override("font", size)
+	label.add_theme_font_size_override("font", in_size)
 
 
 # We use this as an alternative to scaling the card using the "scale" property.

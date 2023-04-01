@@ -140,6 +140,6 @@ func check_card(card_properties: Dictionary) -> bool:
 # Extendable function to allow games to extend CardFilter with their own filters
 # To enter this function, the custom_filter property has to be !null
 # The value to put into it and how to use it is up each developer
-# warning-ignore:unused_argument
+@warning_ignore("unused_parameter")
 func custom_check(card_properties: Dictionary) -> bool:
 	return(false)

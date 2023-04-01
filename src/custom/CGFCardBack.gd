@@ -17,6 +17,8 @@ func scale_to(scale_multiplier: float) -> void:
 		# a bit more to make the text land in the middle
 #		$"VBoxContainer/CenterContainer".custom_minimum_size *= scale_multiplier * 1.5
 		var label_font_size = label.get_theme_font_size("font") * scale_multiplier
-		label.set_theme_font_size_override("font", label_font_size)
+		if label.has_theme_font_size_override("font"):
+			label.remove_theme_font_size_override("font")
+		label.add_theme_font_size_override("font", label_font_size)
 		font_scaled = scale_multiplier
 	

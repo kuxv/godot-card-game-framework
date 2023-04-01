@@ -41,7 +41,7 @@ func _init(
 		# The alterant might require counting other cards to see if it's valid.
 		# So we just run it through the _find_subjects() to see if it will
 		# set is_valid to false.
-		var ret = await _find_subjects(0)
+		await _find_subjects(0)
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue
 	is_primed = true

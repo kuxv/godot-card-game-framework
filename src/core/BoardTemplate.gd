@@ -102,6 +102,6 @@ func get_grid(grid_name: String) -> BoardPlacementGrid:
 			found_grid = grid
 	return(found_grid)
 
-# warning-ignore:unused_argument
+@warning_ignore("unused_parameter")
 func get_final_placement_node(card: Card) -> Node:
 	return(self)

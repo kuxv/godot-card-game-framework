@@ -57,7 +57,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 		# We check if the player confirms it, before looking for targets
 		# We check for optional confirmations only during
 		# The normal run (i.e. not in a cost dry-run)
-		var confirm_return = await check_confirm()
+		await check_confirm()
 	# If any confirmation is accepted, then we only draw a target
 	# if either the card is a cost and we're doing a cost-dry run,
 	# or the card is not a cost and we're in the normal run
@@ -65,7 +65,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int) -> void:
 			or (run_type == CFInt.RunType.COST_CHECK
 			and (is_cost or needs_subject))):
 		# We discover which other card this task will affect, if any
-		var ret = await _find_subjects(sceng_stored_int)
+		await _find_subjects(sceng_stored_int)
 	#print_debug(str(subjects), str(cost_dry_run))
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue

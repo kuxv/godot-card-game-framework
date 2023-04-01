@@ -25,6 +25,7 @@ var _has_cards := false
 
 # The popup node
 @onready var pile_popup := $ViewPopup
+@warning_ignore("unused_private_class_variable")
 @onready var _popup_grid := $ViewPopup/CardView
 # Popup View button for Piles
 @onready var view_button := $Control/ManipulationButtons/View
@@ -295,7 +296,7 @@ func get_bottom_card() -> Card:
 
 # Returns the position among other cards the specified card should have.
 func get_stack_position(card: Card) -> Vector2:
-	# warning-ignore:unused_variable
+	@warning_ignore("unused_variable")
 	var shift_x = 0.5 - 0.0014 * get_card_count()
 	return Vector2(_shift_x() * get_card_index(card), -_shift_y() * get_card_index(card))
 

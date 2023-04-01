@@ -200,8 +200,7 @@ func _extra_dupe_preparation(dupe_focus: Card, card: Card) -> void:
 
 # Overridable function for games to extend processing of dupe card
 # after adding it to the scene
-# warning-ignore:unused_argument
-# warning-ignore:unused_argument
+@warning_ignore("unused_parameter")
 func _extra_dupe_ready(dupe_focus: Card, card: Card) -> void:
 	if CFConst.VIEWPORT_FOCUS_ZOOM_TYPE == "scale":
 		dupe_focus.scale = Vector2(1,1) * dupe_focus.focused_scale * cfc.curr_scale

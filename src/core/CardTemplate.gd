@@ -274,6 +274,7 @@ var card_back : CardBack
 # And the methods which are used for modifying the card labels and sizing.
 # This will be loaded in `_init_card_layout()`
 var card_front : CardFront
+@warning_ignore("unused_private_class_variable")
 var _card_text
 # Holds which controls have already been resized through resize_recursively()
 # to avoid trying to resize them again
@@ -1875,8 +1876,7 @@ func check_play_costs() -> Color:
 # setup to not allow moves to the board,
 # (which would normally send it back to its origin container)
 # to instead be redirected to a pile.
-# warning-ignore:unused_argument
-# warning-ignore:unused_argument
+@warning_ignore("unused_parameter")
 func common_pre_move_scripts(new_host: Node, old_host: Node, move_tags: Array) -> Node:
 	return(new_host)
 
@@ -1887,9 +1887,7 @@ func common_pre_move_scripts(new_host: Node, old_host: Node, move_tags: Array) -
 # container, or the same. new_host is where it moved to, and old_host
 # is where it moved from. They can be the same, such as when a card changes
 # places on the table.
-# warning-ignore:unused_argument
-# warning-ignore:unused_argument
-# warning-ignore:unused_argument
+@warning_ignore("unused_parameter")
 func common_post_move_scripts(new_host: String, old_host: String, move_tags: Array) -> void:
 	pass
 

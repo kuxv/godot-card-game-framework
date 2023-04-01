@@ -304,8 +304,7 @@ static func convert_texture_to_image(texture, is_lossless = false) -> ImageTextu
 #		print_debug(texture)
 		tex = texture
 	var image = tex.get_image()
-	var new_texture = ImageTexture.new();
-	return new_texture.create_from_image(image)
+	return ImageTexture.create_from_image(image)
 #	if is_lossless:
 #		var new_texture = ImageTexture.new();
 #		return new_texture.create_from_image(image)

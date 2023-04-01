@@ -21,7 +21,9 @@ var load_start_time := Time.get_ticks_msec()
 
 # Unit Testing flag
 var ut := false
+@warning_ignore("unused_private_class_variable")
 var _ut_tokens_only_on_board := CFConst.TOKENS_ONLY_ON_BOARD
+@warning_ignore("unused_private_class_variable")
 var _ut_show_token_buttons := CFConst.SHOW_TOKEN_BUTTONS
 # This is set to true when tests are running
 var is_testing := false

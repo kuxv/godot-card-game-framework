@@ -33,10 +33,9 @@ func setup(token_name: String, _token_drawer = null) -> void:
 	name = token_name
 	token_drawer = _token_drawer
 	var textrect : TextureRect = $CenterContainer/TokenIcon
-	var new_texture = ImageTexture.new();
 	var tex = load(CFConst.PATH_TOKENS + CFConst.TOKENS_MAP[token_name])
 	var image = tex.get_data()
-	new_texture.create_from_image(image)
+	var new_texture = ImageTexture.create_from_image(image)
 	textrect.texture = new_texture
 	$Name.text = token_name.capitalize()
 
