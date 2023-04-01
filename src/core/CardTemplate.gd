@@ -219,6 +219,7 @@ var attachments := []
 # this tracks who its host is.
 var current_host_card : Card = null
 # If true, the card will be displayed faceup. If false, it will be facedown
+var m_is_faceup := true # FIXME maybe just : bool without value?
 var is_faceup := true : get = get_is_faceup, set = set_is_faceup_setter
 # Used to keep the card and mouse cursor in sync when dragging the card around
 # Represents the cursor's position relative to the card origin when drag was initiated
@@ -879,7 +880,7 @@ func set_is_faceup(
 			check := false,
 			tags := ["Manual"]) -> int:
 	var retcode: int
-	if value == is_faceup:
+	if value == m_is_faceup:
 		retcode = CFConst.ReturnCode.OK
 	# We check if the parent is a valid instance
 	# If it is not, this is a viewport dupe card that has not finished
@@ -887,7 +888,7 @@ func set_is_faceup(
 	elif not check and is_instance_valid(get_parent()):
 		tokens.is_drawer_open = false
 		# We make sure to remove other tweens of the same type to avoid a deadlock
-		is_faceup = value
+		m_is_faceup = value
 		# When we change faceup state, we reset the is_viewed to false
 		if set_is_viewed(false) == CFConst.ReturnCode.FAILED:
 			printerr("ERROR: Something went unexpectedly in set_is_faceup")
@@ -932,7 +933,7 @@ func set_is_faceup(
 
 # Getter for is_faceup
 func get_is_faceup() -> bool:
-	return is_faceup
+	return m_is_faceup
 
 
 # Setter for is_faceup
@@ -2158,7 +2159,7 @@ func _flip_card(to_invisible: Control, to_visible: Control, instant := false) ->
 		# The highlight is larger than the card size, but also offset a bit
 		# so that it's still centered. This way its borders only extend
 		# over the card borders. We need to offest to the right location.
-		_flip_tween.tweem_property(highlight, 'position', Vector2((highlight.size.x-3)/2,0), 0.4) \
+		_flip_tween.tween_property(highlight, 'position', Vector2((highlight.size.x-3)/2,0), 0.4) \
 			.set_trans(Tween.TRANS_QUAD) \
 			.set_ease(Tween.EASE_IN)
 		await _flip_tween.loop_finished
