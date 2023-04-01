@@ -205,7 +205,7 @@ signal scripts_executed(card, sceng, trigger)
 var m_canonical_name : String
 var canonical_name : String : get = get_card_name, set = set_card_name_setter
 # Ensures all nodes fit inside this rect.
-var m_card_size : Vector2
+var m_card_size := canonical_size # Vector2
 var card_size := canonical_size: 
 	get: return m_card_size 
 	set(value): set_card_size_setter(value)
@@ -292,7 +292,7 @@ var spawn_destination
 @onready var targeting_arrow
 
 var _tween : Tween
-var _flip_tween : Tween # $Control/FlipTween
+var _flip_tween : Tween
 @onready var _control := $Control
 # This is the control node we've setup to host the card_front design
 @onready var _card_front_container := $Control/Front
@@ -313,7 +313,7 @@ var _flip_tween : Tween # $Control/FlipTween
 func _ready() -> void:
 	_tween = create_tween()
 	_tween.kill()
-	_flip_tween = create_tween()
+	_flip_tween = _control.create_tween()
 	_flip_tween.kill()
 	targeting_arrow = targeting_arrow_scene.instantiate()
 	add_child(targeting_arrow)
@@ -325,10 +325,8 @@ func _ready() -> void:
 	# The board without calling setup() and then use its hardcoded labels
 	_init_card_name()
 	setup()
-	# warning-ignore:return_value_discarded
-	$Control.connect("gui_input",Callable(self,"_on_Card_gui_input"))
-	# warning-ignore:return_value_discarded
-	$Control.connect("tree_exiting",Callable(self,"_on_tree_exiting"))
+	$Control.gui_input.connect(_on_Card_gui_input)
+	$Control.tree_exiting.connect(_on_tree_exiting)
 	cfc.signal_propagator.connect_new_card(self)
 
 func _init_card_layout() -> void:
@@ -353,11 +351,10 @@ func _init_card_layout() -> void:
 		card_back = _card_back_container.get_child(0)
 		card_front = _card_front_container.get_child(0)
 
-
 # Ensures that the canonical card name is set in all fields which use it.
 #  var canonical_name, "Name" label and self.name should use the same string.
 func _init_card_name() -> void:
-	if canonical_name.is_empty(): # TODO: this used to checked for null using not
+	if canonical_name.is_empty(): # TODO: this used to check for null using not
 		# The node name changes depeding on how many other cards
 		# with the same node name are siblings
 		# We use this regex to discover the actual name
@@ -466,7 +463,7 @@ func _on_Card_gui_input(event) -> void:
 				and not tokens.are_hovered():
 			# If it's a double-click, then it's not a card drag
 			# But rather it's script execution
-			if event.doubleclick\
+			if event.double_click \
 					and ((check_play_costs() != CFConst.CostsState.IMPOSSIBLE
 					and get_state_exec() == "hand")
 					or get_state_exec() == "board"):
@@ -912,7 +909,6 @@ func set_is_faceup(
 				and cfc.NMAP.get("main", null)\
 				and cfc.NMAP.main._previously_focused_cards.has(self):
 			var dupe_card : Card = cfc.NMAP.main._previously_focused_cards[self]
-# warning-ignore:return_value_discarded
 			dupe_card.set_is_faceup(value, true)
 		retcode = CFConst.ReturnCode.CHANGED
 		# When the faceup has the instant switch, it's typically a built-in
@@ -1028,6 +1024,7 @@ func set_state(value: int) -> void:
 	var prev_state = state
 	state = value
 	state_finalized = false
+#	state_changed.emit(prev_state, state)
 	emit_signal("state_changed", self, prev_state, state)
 
 
@@ -1293,14 +1290,13 @@ func move_to(targetHost: Node,
 				_target_position = targetHost.get_stack_position(self)
 				_target_rotation = 0.0
 				set_state(CardState.MOVING_TO_CONTAINER)
-				emit_signal("card_moved_to_pile",
-						self,
-						"card_moved_to_pile",
-						{
-							"destination": targetHost.name,
-							"source": parentHost.name,
-							"tags": tags
-						}
+				card_moved_to_pile.emit(
+					card_moved_to_pile,
+					{
+						"destination": targetHost.name,
+						"source": parentHost.name,
+						"tags": tags
+					}
 				)
 				# We start the flipping animation here, even though it also
 				# set in the card state, because we want to see it while the
@@ -2142,9 +2138,9 @@ func _flip_card(to_invisible: Control, to_visible: Control, instant := false) ->
 		pass
 	else:
 		# We clear existing tweens to avoid a deadlocks
-		for n in [_card_front_container, _card_back_container, highlight]:
-			_flip_tween.kill()
-			_flip_tween = create_tween()
+#		for n in [_card_front_container, _card_back_container, highlight]:
+		_flip_tween.kill()
+		_flip_tween = _control.create_tween()	
 		_flip_tween.tween_property(to_invisible, 'scale', Vector2(0,1), 0.4) \
 			.set_trans(Tween.TRANS_QUAD) \
 			.set_ease(Tween.EASE_IN)
@@ -2160,10 +2156,11 @@ func _flip_card(to_invisible: Control, to_visible: Control, instant := false) ->
 		_flip_tween.tween_property(highlight, 'position', Vector2((highlight.size.x-3)/2,0), 0.4) \
 			.set_trans(Tween.TRANS_QUAD) \
 			.set_ease(Tween.EASE_IN)
-		await _flip_tween.loop_finished
+		await _flip_tween.finished
 		to_visible.visible = true
 		to_invisible.visible = false
-#		FIXME: kill()?
+		_flip_tween.kill()
+		_flip_tween = _control.create_tween()
 		_flip_tween.tween_property(to_visible, 'scale', Vector2(1,1), 0.4) \
 			.set_trans(Tween.TRANS_QUAD) \
 			.set_ease(Tween.EASE_OUT)
@@ -2176,8 +2173,6 @@ func _flip_card(to_invisible: Control, to_visible: Control, instant := false) ->
 		_flip_tween.tween_property(highlight, 'position', Vector2(-3,-3), 0.4) \
 			.set_trans(Tween.TRANS_QUAD) \
 			.set_ease(Tween.EASE_OUT)
-		_flip_tween.start()
-
 
 # Card rotation animation
 func _add_tween_rotation(
@@ -2406,7 +2401,7 @@ func _process_card_state() -> void:
 						intermediate_position = get_viewport().size/2
 					_add_tween_global_position(global_position, intermediate_position,
 						to_container_tween_duration)
-					await _tween.loop_finished
+					await _tween.finished
 					_tween_stuck_time = 0
 					_fancy_move_second_part = true
 				# We need to check again, just in case it's been reorganized instead.
@@ -2415,7 +2410,7 @@ func _process_card_state() -> void:
 						to_container_tween_duration, Tween.TRANS_SINE, Tween.EASE_IN_OUT)
 					_add_tween_rotation($Control.rotation,_target_rotation,
 						to_container_tween_duration)
-					await _tween.loop_finished
+					await _tween.finished
 					_determine_idle_state()
 				_fancy_move_second_part = false
 
@@ -2429,6 +2424,7 @@ func _process_card_state() -> void:
 			set_card_rotation(0,false,false)
 			if not _tween.is_running():
 				_tween.kill()
+				_tween = create_tween()
 				_add_tween_position(position, _target_position, reorganization_tween_duration)
 				if not scale.is_equal_approx(Vector2(1,1)):
 					_add_tween_scale(scale, Vector2(1,1), reorganization_tween_duration)
@@ -2690,7 +2686,7 @@ func _process_card_state() -> void:
 				_tween = create_tween()
 				_add_tween_scale(scale, Vector2(1,1),0.75)
 				_add_tween_global_position(global_position, get_viewport().size/2 - CFConst.CARD_SIZE/2)
-				await _tween.loop_finished
+				await _tween.finished
 				_tween_stuck_time = 0
 				move_to(spawn_destination)
 				spawn_destination = null
