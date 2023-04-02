@@ -63,6 +63,16 @@ offset_left = -1.33484
 offset_top = 44.0497
 offset_right = 187.665
 offset_bottom = 84.0497
+item_count = 4
+selected = 2
+popup/item_0/text = "Scaling Focus"
+popup/item_0/id = 0
+popup/item_1/text = "Viewport Focus"
+popup/item_1/id = 1
+popup/item_2/text = "Scaling + Viewport Focus"
+popup/item_2/id = 2
+popup/item_3/text = "Scaling + Info Panels"
+popup/item_3/id = 3
 
 [node name="ReshuffleAllDeck" type="Button" parent="."]
 layout_mode = 0
