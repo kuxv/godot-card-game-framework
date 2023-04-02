@@ -459,6 +459,7 @@ func shuffle_cards(animate = true) -> void:
 		if position != init_position:
 			if _tween: _tween.kill()
 			_tween = create_tween()
+			_tween.set_parallel()
 			_add_tween_position(position,init_position,0.2)
 			_add_tween_rotation(rotation_degrees,0,0.2)
 		z_index = 0
@@ -466,7 +467,7 @@ func shuffle_cards(animate = true) -> void:
 		# if we're already running another animation, just shuffle
 		super.shuffle_cards()
 	reorganize_stack()
-	emit_signal("shuffle_completed", self)
+	shuffle_completed.emit(self)
 
 
 # Overrides the re_place() function of [Pile] in order

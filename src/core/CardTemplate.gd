@@ -891,14 +891,14 @@ func set_is_faceup(
 		if set_is_viewed(false) == CFConst.ReturnCode.FAILED:
 			printerr("ERROR: Something went unexpectedly in set_is_faceup")
 		if value:
-			_flip_card(_card_back_container, _card_front_container,instant)
+			_flip_card(_card_back_container, _card_front_container, instant)
 			# We need this check, as this node might not be ready
 			# Yet when a viewport focus dupe is instancing
 			buttons.set_button_visible("View", false)
 			if is_instance_valid(card_back):
 				card_back.stop_card_back_animation()
 		else:
-			_flip_card(_card_front_container, _card_back_container,instant)
+			_flip_card(_card_front_container, _card_back_container, instant)
 			buttons.set_button_visible("View", true)
 #			if get_parent() == cfc.NMAP.board:
 			if is_instance_valid(card_back):
@@ -914,14 +914,14 @@ func set_is_faceup(
 		# When the faceup has the instant switch, it's typically a built-in
 		# action, which we don't want trigerring scripts
 		if not instant:
-			emit_signal(
-					"card_flipped",
-					self,
-					"card_flipped",
-					{
-						"is_faceup": value,
-						"tags": tags,
-					})
+			card_flipped.emit(
+				self,
+				"card_flipped",
+				{
+					"is_faceup": value,
+					"tags": tags,
+				}
+			)
 	# If we're doing a check, then we just report CHANGED.
 	else:
 		retcode = CFConst.ReturnCode.CHANGED
@@ -1024,8 +1024,7 @@ func set_state(value: int) -> void:
 	var prev_state = state
 	state = value
 	state_finalized = false
-#	state_changed.emit(prev_state, state)
-	emit_signal("state_changed", self, prev_state, state)
+	state_changed.emit(self, prev_state, state)
 
 
 # Setter for card_rotation.
@@ -1097,7 +1096,7 @@ func set_card_rotation(
 			# so we just rotate the internal $Control. The results are the same.
 			_tween.kill()
 			_tween = create_tween()
-			_add_tween_rotation($Control.rotation,value)
+			_add_tween_rotation($Control.rotation, value)
 			# We only start the animation if this flag is set to true
 			# This allows us to set the card to rotate on the next
 			# available tween, instead of immediately.
@@ -1106,14 +1105,14 @@ func set_card_rotation(
 				_tween.start()
 			#$Control/Tokens.rotation_degrees = -value # need to figure this out
 			# When the card actually changes orientation
-			# We report that it changed.
-			emit_signal(
-					"card_rotated", self,
-					"card_rotated",
-					{
-						"degrees": value,
-						"tags": tags,
-					}
+			# We report that it changed
+			card_rotated.emit(
+				self,
+				"card_rotated",
+				{
+					"degrees": value,
+					"tags": tags,
+				}
 			)
 
 		retcode = CFConst.ReturnCode.CHANGED
@@ -1250,14 +1249,14 @@ func move_to(targetHost: Node,
 			card_rotation = 0
 			_target_rotation = _recalculate_rotation()
 			set_state(CardState.MOVING_TO_CONTAINER)
-			emit_signal("card_moved_to_hand",
-					self,
-					"card_moved_to_hand",
-					{
-						"destination": targetHost.name,
-						"source": parentHost.name,
-						"tags": tags
-					}
+			card_moved_to_hand.emit(
+				self,
+				"card_moved_to_hand",
+				{
+					"destination": targetHost.name,
+					"source": parentHost.name,
+					"tags": tags
+				}
 			)
 			# We reorganize the left over cards in hand.
 			for c in targetHost.get_all_cards():
@@ -1291,7 +1290,8 @@ func move_to(targetHost: Node,
 				_target_rotation = 0.0
 				set_state(CardState.MOVING_TO_CONTAINER)
 				card_moved_to_pile.emit(
-					card_moved_to_pile,
+					self,
+					"card_moved_to_pile",
 					{
 						"destination": targetHost.name,
 						"source": parentHost.name,
@@ -1333,14 +1333,14 @@ func move_to(targetHost: Node,
 					_determine_target_position_from_mouse()
 				move_to_front()
 			set_state(CardState.DROPPING_TO_BOARD)
-			emit_signal("card_moved_to_board",
-					self,
-					"card_moved_to_board",
-					{
-						"destination": targetHost.name,
-						"source": parentHost.name,
-						"tags": tags
-					}
+			card_moved_to_board.emit(
+				self,
+				"card_moved_to_board",
+				{
+					"destination": targetHost.name,
+					"source": parentHost.name,
+					"tags": tags
+				}
 			)
 		if is_instance_valid(parentHost) and parentHost.is_in_group("hands"):
 			# We also want to rearrange the hand when we take cards out of it
@@ -1838,17 +1838,20 @@ func animate_shuffle(anim_speed : float, style : int) -> void:
 		start_pos_anim = Tween.TRANS_CIRC
 		end_pos_anim = Tween.TRANS_SINE
 		rot_anim = Tween.TRANS_ELASTIC
+	_tween.kill()
+	_tween = create_tween()
+	_tween.set_parallel()
 	_add_tween_position(starting_card_position,center_card_pop_position,
 			pos_speed,start_pos_anim,Tween.EASE_OUT)
 	if rot_anim:
 		_add_tween_rotation(0,random_rot,rot_speed,rot_anim,Tween.EASE_OUT)
-	_tween.play()
-	await _tween.finished
+	await _tween.finished # FIXME can be removed as it tweeners are sequential?
+	_tween = create_tween()
+	_tween.set_parallel()
 	_add_tween_position(center_card_pop_position,starting_card_position,
 			pos_speed,end_pos_anim,Tween.EASE_IN)
 	if rot_anim:
 		_add_tween_rotation(random_rot,0,rot_speed,rot_anim,Tween.EASE_IN)
-	_tween.play()
 
 
 # This function can be overriden by any class extending Card, in order to provide
@@ -2137,10 +2140,9 @@ func _flip_card(to_invisible: Control, to_visible: Control, instant := false) ->
 	elif get_parent() == null:
 		pass
 	else:
-		# We clear existing tweens to avoid a deadlocks
-#		for n in [_card_front_container, _card_back_container, highlight]:
 		_flip_tween.kill()
-		_flip_tween = _control.create_tween()	
+		_flip_tween = _control.create_tween()
+		_flip_tween.set_parallel()
 		_flip_tween.tween_property(to_invisible, 'scale', Vector2(0,1), 0.4) \
 			.set_trans(Tween.TRANS_QUAD) \
 			.set_ease(Tween.EASE_IN)
@@ -2159,8 +2161,9 @@ func _flip_card(to_invisible: Control, to_visible: Control, instant := false) ->
 		await _flip_tween.finished
 		to_visible.visible = true
 		to_invisible.visible = false
-		_flip_tween.kill()
+#		_flip_tween.kill()
 		_flip_tween = _control.create_tween()
+		_flip_tween.set_parallel()
 		_flip_tween.tween_property(to_visible, 'scale', Vector2(1,1), 0.4) \
 			.set_trans(Tween.TRANS_QUAD) \
 			.set_ease(Tween.EASE_OUT)
@@ -2399,17 +2402,17 @@ func _process_card_state() -> void:
 					# Instead we use directly the viewport coords.
 					else:
 						intermediate_position = get_viewport().size/2
-					_add_tween_global_position(global_position, intermediate_position,
-						to_container_tween_duration)
+					_add_tween_global_position(global_position, intermediate_position, to_container_tween_duration)
 					await _tween.finished
+					_tween = create_tween()
+					_tween.stop()
 					_tween_stuck_time = 0
 					_fancy_move_second_part = true
 				# We need to check again, just in case it's been reorganized instead.
 				if state == CardState.MOVING_TO_CONTAINER:
-					_add_tween_position(position, _target_position,
-						to_container_tween_duration, Tween.TRANS_SINE, Tween.EASE_IN_OUT)
-					_add_tween_rotation($Control.rotation,_target_rotation,
-						to_container_tween_duration)
+					_add_tween_position(position, _target_position, to_container_tween_duration, Tween.TRANS_SINE, Tween.EASE_IN_OUT)
+					_add_tween_rotation($Control.rotation,_target_rotation, to_container_tween_duration)
+					_tween.play()
 					await _tween.finished
 					_determine_idle_state()
 				_fancy_move_second_part = false
@@ -2428,8 +2431,7 @@ func _process_card_state() -> void:
 				_add_tween_position(position, _target_position, reorganization_tween_duration)
 				if not scale.is_equal_approx(Vector2(1,1)):
 					_add_tween_scale(scale, Vector2(1,1), reorganization_tween_duration)
-				_add_tween_rotation($Control.rotation,_target_rotation,
-					reorganization_tween_duration)
+				_add_tween_rotation($Control.rotation,_target_rotation, reorganization_tween_duration)
 				set_state(CardState.IN_HAND)
 
 		CardState.PUSHED_ASIDE:
