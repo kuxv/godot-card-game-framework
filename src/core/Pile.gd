@@ -256,8 +256,8 @@ func reorganize_stack() -> void:
 		position.y += get_card_count() * _shift_y()
 	if "right" in get_groups():
 		position.x -= get_card_count() * _shift_x()
-	$CollisionShape2D.shape.size = $Control.size / 2
-	$CollisionShape2D.position = $Control.position + $Control.size /2
+	$CollisionShape2D.shape.size = $Control.size
+	$CollisionShape2D.position = $Control.position + $Control.size / 2
 
 
 # Override the godot builtin move_child() method,

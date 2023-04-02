@@ -219,7 +219,7 @@ func re_place() -> void:
 		c.position = c.recalculate_position()
 
 func _adjust_collision_area() -> void:
-	$CollisionShape2D.shape.size = $Control.size / 2
+	$CollisionShape2D.shape.size = $Control.size
 	$CollisionShape2D.position = $Control.size / 2
 	highlight.size = $Control.size
 

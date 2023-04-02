@@ -860,7 +860,7 @@ func set_card_size(value: Vector2, ignore_area = false) -> void:
 		node.call_deferred('set_size', node.custom_minimum_size)
 	highlight.position = Vector2(-3, -3)
 	if not ignore_area:
-		$CollisionShape2D.shape.size = value / 2
+		$CollisionShape2D.shape.size = value
 		$CollisionShape2D.position = value / 2
 
 
